@@ -27,3 +27,8 @@ export function toggleFavorite(id: string): boolean {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
   return set.has(id); // here I return the new state!
 }
+
+export function notifyFavoritesChanged() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event("brabant:favorites-changed"));
+}
