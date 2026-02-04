@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { dataEvents } from "@/src/data/events.data";
 import { isToday, isThisMonth, isThisWeekend } from "@/src/lib/eventDateFilters";
+import { FavoriteButton } from "@/src/components/FavoriteButton";
 
 type WhenFilter = "today" | "weekend" | "month";
 
-export default function EventsPage({ searchParams }: { searchParams?: { time?: string } }) {
-  const when = (searchParams?.time ?? "") as WhenFilter;
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ when?: string }>;
+}) {
+  const sp = await searchParams;
+  const when = (sp?.when ?? "") as WhenFilter;
 
   const filteredEvents = dataEvents.filter((event) => {
     if (!when) return true;
@@ -53,9 +59,12 @@ export default function EventsPage({ searchParams }: { searchParams?: { time?: s
                 })}
               </div>
 
-              <h2 className="mt-2 text-lg font-semibold">
-                {event.title.en ?? event.title.nl ?? "Untitled event"}
-              </h2>
+              <div className="mt-2 flex items-start justify-between gap-3">
+                <h2 className="text-lg font-semibold">
+                  {event.title.en ?? event.title.nl ?? "Untitled event"}
+                </h2>
+                <FavoriteButton eventId={event.id} />
+              </div>
 
               {event.description?.en || event.description?.nl ? (
                 <p className="mt-2 line-clamp-3 text-sm text-gray-700">
