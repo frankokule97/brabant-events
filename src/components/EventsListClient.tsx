@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Event } from "@/types/event";
 import { getFavoriteIds } from "@/lib/favorites";
@@ -63,9 +64,13 @@ export function EventsListClient({
           </div>
 
           <div className="mt-2 flex items-start justify-between gap-3">
-            <h2 className="text-lg font-semibold">
+            <Link
+              href={`/events/${event.slug}`}
+              className="hover:underline"
+              title="View event details"
+            >
               {event.title.en ?? event.title.nl ?? "Untitled event"}
-            </h2>
+            </Link>
 
             <div className="flex items-center gap-2">
               <FavoriteButton eventId={event.id} />
