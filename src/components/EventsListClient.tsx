@@ -66,7 +66,18 @@ export function EventsListClient({
             <h2 className="text-lg font-semibold">
               {event.title.en ?? event.title.nl ?? "Untitled event"}
             </h2>
-            <FavoriteButton eventId={event.id} />
+
+            <div className="flex items-center gap-2">
+              <FavoriteButton eventId={event.id} />
+
+              <a
+                href={`/api/calendar?slug=${event.slug}`}
+                className="rounded-full border px-3 py-1 text-sm hover:bg-gray-100"
+                title="Add to calendar"
+              >
+                📅
+              </a>
+            </div>
           </div>
 
           {event.description?.en || event.description?.nl ? (
