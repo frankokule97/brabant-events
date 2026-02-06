@@ -3,7 +3,8 @@ import { dataEvents } from "@/data/events.data";
 import { isToday, isThisMonth, isThisWeekend } from "@/lib/eventDateFilters";
 import { EventsListClient } from "@/components/EventsListClient";
 
-type WhenFilter = "today" | "weekend" | "month";
+const WHEN_FILTERS = ["today", "weekend", "month"] as const;
+type WhenFilter = (typeof WHEN_FILTERS)[number];
 
 export default async function EventsPage({
   searchParams,
@@ -11,7 +12,9 @@ export default async function EventsPage({
   searchParams?: Promise<{ when?: string; fav?: string }>;
 }) {
   const sp = await searchParams;
-  const when = (sp?.when ?? "") as WhenFilter;
+  const rawWhen = sp?.when;
+  const when: WhenFilter | "" =
+    rawWhen && WHEN_FILTERS.includes(rawWhen as WhenFilter) ? (rawWhen as WhenFilter) : "";
   const favoritesOnly = sp?.fav === "1";
 
   const filteredEvents = dataEvents.filter((event) => {
@@ -21,6 +24,8 @@ export default async function EventsPage({
     if (when === "month") return isThisMonth(event);
     return true;
   });
+
+  const isEmptyForDateFilter = filteredEvents.length === 0;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
@@ -49,8 +54,11 @@ export default async function EventsPage({
           </FilterButton>
         </nav>
       </header>
-
-      <EventsListClient events={filteredEvents} favoritesOnly={favoritesOnly} />
+      {isEmptyForDateFilter ? (
+        <EmptyStateServer when={when} />
+      ) : (
+        <EventsListClient events={filteredEvents} favoritesOnly={favoritesOnly} />
+      )}
     </main>
   );
 }
@@ -74,5 +82,36 @@ function FilterButton({
     >
       {children}
     </Link>
+  );
+}
+
+function EmptyStateServer({ when }: { when: WhenFilter | "" }) {
+  const label =
+    when === "today"
+      ? "today"
+      : when === "weekend"
+        ? "this weekend"
+        : when === "month"
+          ? "this month"
+          : "";
+
+  return (
+    <section className="rounded-xl border p-6">
+      <h2 className="text-lg font-semibold">No events found</h2>
+      <p className="mt-2 text-sm text-gray-600">
+        {label
+          ? `There are no events scheduled ${label}.`
+          : `There are no events to show right now.`}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          href="/events"
+          className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+        >
+          Reset filters
+        </Link>
+      </div>
+    </section>
   );
 }

@@ -41,12 +41,53 @@ export function EventsListClient({
     return <div className="rounded-xl border p-6 text-sm text-gray-700">Loading favorites…</div>;
   }
 
+  // 1. Case --> if user opens favorites, but has no favorites selected yet
+  if (favoritesOnly && favoriteIds && favoriteIds.size === 0) {
+    return (
+      <div className="rounded-xl border p-6 text-sm text-gray-700">
+        <div className="text-base font-semibold text-gray-900">No favorites yet</div>
+        <p className="mt-2">Click the star on an event to add it to favorites.</p>
+
+        <div className="mt-4">
+          <Link
+            href="/events"
+            className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+          >
+            Show all events
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Case --> if user has selected favorites, but they don't match the "when" filter
   if (visibleEvents.length === 0) {
     return (
       <div className="rounded-xl border p-6 text-sm text-gray-700">
-        {favoritesOnly
-          ? "No favorited events match this filter."
-          : "No events found for this filter."}
+        <div className="text-base font-semibold text-gray-900">Nothing to show</div>
+        <p className="mt-2">
+          {favoritesOnly
+            ? "None of your favorited events match the current filter."
+            : "No events match the current filter."}
+        </p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/events"
+            className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+          >
+            Reset filters
+          </Link>
+
+          {favoritesOnly ? (
+            <Link
+              href="/events?fav=1"
+              className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            >
+              Show all favorites
+            </Link>
+          ) : null}
+        </div>
       </div>
     );
   }
