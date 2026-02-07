@@ -2,6 +2,13 @@ import Link from "next/link";
 import { dataEvents } from "@/data/events.data";
 import { isToday, isThisMonth, isThisWeekend } from "@/lib/eventDateFilters";
 import { EventsListClient } from "@/components/EventsListClient";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Events",
+  description:
+    "Browse events in North Brabant. Filter by today, this weekend, or this month, and save favorites.",
+};
 
 const WHEN_FILTERS = ["today", "weekend", "month"] as const;
 type WhenFilter = (typeof WHEN_FILTERS)[number];
