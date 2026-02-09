@@ -1,6 +1,53 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dataEvents } from "@/data/events.data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const event = dataEvents.find((e) => e.slug === slug);
+
+  // safety precaution step
+  if (!event) {
+    return {
+      title: "Event not found",
+      description: "The requested event could not be found.",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const title = event.title.en ?? event.title.nl ?? "Event";
+  const description = event.description?.en ?? event.description?.nl ?? "";
+  const shortDescription =
+    description.trim().length > 0
+      ? description.trim().slice(0, 160)
+      : `Event in ${event.location.city}, ${event.location.region}.`;
+
+  const url = `/events/${event.slug}`;
+
+  return {
+    title,
+    description: shortDescription,
+
+    openGraph: {
+      title,
+      description: shortDescription,
+      url,
+      type: "article",
+    },
+
+    twitter: {
+      title,
+      description: shortDescription,
+      card: "summary_large_image",
+    },
+  };
+}
 
 export default async function EventDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -10,7 +57,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
 
   const title = event.title.en ?? event.title.nl ?? "Event";
   const description = event.description?.en ?? event.description?.nl ?? "";
-  const dateTime = new Date(event.startDateTime).toLocaleString("en-NL", {
+  const dateTime = new Date(event.startDateTime).toLocaleString("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
   });
