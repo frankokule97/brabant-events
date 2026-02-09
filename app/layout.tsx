@@ -31,6 +31,14 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "BrabantEvents",
     type: "website",
+    images: [
+      {
+        url: "/brabant-events.png",
+        width: 1200,
+        height: 630,
+        alt: "Brabant Events",
+      },
+    ],
   },
 
   twitter: {
@@ -38,6 +46,7 @@ export const metadata: Metadata = {
     title: "BrabantEvents",
     description:
       "Discover events in North Brabant. Filter events by date, save your favorite events, and add events to your calendar.",
+    images: ["/brabant-events.png"],
   },
 
   robots: {

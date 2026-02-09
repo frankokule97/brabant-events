@@ -40,12 +40,21 @@ export async function generateMetadata({
       description: shortDescription,
       url,
       type: "article",
+      images: [
+        {
+          url: "/brabant-events.png",
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
 
     twitter: {
-      title,
+      card: "summary_large_image",
+      title: title,
       description: shortDescription,
-      card: "summary",
+      images: ["/brabant-events.png"],
     },
   };
 }
