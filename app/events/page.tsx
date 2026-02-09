@@ -1,3 +1,4 @@
+import { toJsonLdScript } from "@/lib/jsonLd";
 import Link from "next/link";
 import { dataEvents } from "@/data/events.data";
 import { isToday, isThisMonth, isThisWeekend } from "@/lib/eventDateFilters";
@@ -34,8 +35,27 @@ export default async function EventsPage({
 
   const isEmptyForDateFilter = filteredEvents.length === 0;
 
+  const listJsonLd = favoritesOnly
+    ? null
+    : {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: filteredEvents.map((event, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          url: `https://brabant-events.vercel.app/events/${event.slug}`,
+          name: event.title.en ?? event.title.nl ?? "Event",
+        })),
+      };
+
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
+      {listJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLdScript(listJsonLd) }}
+        />
+      ) : null}
       <header className="mb-6">
         <h1 className="text-3xl font-semibold">Events</h1>
         <p className="mt-2 text-sm text-gray-600">Discover events in North Brabant.</p>

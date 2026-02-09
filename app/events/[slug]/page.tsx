@@ -79,6 +79,8 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
     description: description || undefined,
     startDate: event.startDateTime,
     url: `https://brabant-events.vercel.app/events/${event.slug}`,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: {
       "@type": "Place",
       name: event.location.venueName,
@@ -94,6 +96,13 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
         longitude: event.location.lng,
       },
     },
+    offers: event.bookingUrl
+      ? {
+          "@type": "Offer",
+          url: event.bookingUrl,
+          availability: "https://schema.org/InStock",
+        }
+      : undefined,
   };
 
   return (
