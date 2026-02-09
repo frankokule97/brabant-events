@@ -1,3 +1,4 @@
+import { toJsonLdScript } from "@/lib/jsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -28,7 +29,7 @@ export async function generateMetadata({
       ? description.trim().slice(0, 160)
       : `Event in ${event.location.city}, ${event.location.region}.`;
 
-  const url = `/events/${event.slug}`;
+  const url = `https://brabant-events.vercel.app/events/${event.slug}`;
 
   return {
     title,
@@ -44,7 +45,7 @@ export async function generateMetadata({
     twitter: {
       title,
       description: shortDescription,
-      card: "summary_large_image",
+      card: "summary",
     },
   };
 }
@@ -62,8 +63,37 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
     timeStyle: "short",
   });
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: title,
+    description: description || undefined,
+    startDate: event.startDateTime,
+    url: `https://brabant-events.vercel.app/events/${event.slug}`,
+    location: {
+      "@type": "Place",
+      name: event.location.venueName,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: event.location.city,
+        addressRegion: event.location.region,
+        addressCountry: "NL",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: event.location.lat,
+        longitude: event.location.lng,
+      },
+    },
+  };
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLdScript(jsonLd) }}
+      />
+
       <Link href="/events" className="text-sm underline">
         ← Back to events
       </Link>
