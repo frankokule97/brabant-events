@@ -2,19 +2,17 @@ import { toJsonLdScript } from "@/lib/jsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { dataEvents } from "@/data/events.data";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { id } = await params;
 
-  const event = dataEvents.find((e) => e.slug === slug);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  // safety precaution step
-  if (!event) {
+  if (!baseUrl) {
     return {
       title: "Event not found",
       description: "The requested event could not be found.",
@@ -22,14 +20,36 @@ export async function generateMetadata({
     };
   }
 
-  const title = event.title.en ?? event.title.nl ?? "Event";
-  const description = event.description?.en ?? event.description?.nl ?? "";
-  const shortDescription =
-    description.trim().length > 0
-      ? description.trim().slice(0, 160)
-      : `Event in ${event.location.city}, ${event.location.region}.`;
+  const res = await fetch(`${baseUrl}/api/events/${encodeURIComponent(id)}`, {
+    next: { revalidate: 600 },
+  });
 
-  const url = `https://brabant-events.vercel.app/events/${event.slug}`;
+  if (res.status === 404 || !res.ok) {
+    return {
+      title: "Event not found",
+      description: "The requested event could not be found.",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const event = (await res.json()) as {
+    id: string;
+    title: string;
+    shortDescription: string | null;
+    city: string;
+    venueName: string;
+    imageUrl: string | null;
+  };
+
+  const title = event.title ?? "Event";
+  const description =
+    event.shortDescription?.trim() ||
+    `Event at ${event.venueName || "venue"} in ${event.city || "the Netherlands"}.`;
+
+  const shortDescription = description.length > 160 ? description.slice(0, 160) : description;
+
+  const url = `https://brabant-events.vercel.app/events/${event.id}`;
+  const eventImage = event.imageUrl ?? "/brabant-events.png";
 
   return {
     title,
@@ -42,7 +62,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: "/brabant-events.png",
+          url: eventImage,
           width: 1200,
           height: 630,
           alt: title,
@@ -54,19 +74,28 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: title,
       description: shortDescription,
-      images: ["/brabant-events.png"],
+      images: [eventImage],
     },
   };
 }
 
-export default async function EventDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
-  const event = dataEvents.find((e) => e.slug === slug);
-  if (!event) return notFound();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!baseUrl) return notFound();
 
-  const title = event.title.en ?? event.title.nl ?? "Event";
-  const description = event.description?.en ?? event.description?.nl ?? "";
+  const res = await fetch(`${baseUrl}/api/events/${encodeURIComponent(id)}`, {
+    next: { revalidate: 600 },
+  });
+
+  if (res.status === 404) return notFound();
+  if (!res.ok) return notFound();
+
+  const event = await res.json();
+
+  const title = event.title?.trim() ?? "Event";
+  const description = event.shortDescription?.trim() ?? "";
   const dateTime = new Date(event.startDateTime).toLocaleString("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
@@ -78,22 +107,16 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
     name: title,
     description: description || undefined,
     startDate: event.startDateTime,
-    url: `https://brabant-events.vercel.app/events/${event.slug}`,
+    url: `https://brabant-events.vercel.app/events/${event.id}`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: {
       "@type": "Place",
-      name: event.location.venueName,
+      name: event.venueName,
       address: {
         "@type": "PostalAddress",
-        addressLocality: event.location.city,
-        addressRegion: event.location.region,
+        addressLocality: event.city,
         addressCountry: "NL",
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: event.location.lat,
-        longitude: event.location.lng,
       },
     },
     offers: event.bookingUrl
@@ -119,7 +142,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
       <header className="mt-6">
         <h1 className="text-3xl font-semibold">{title}</h1>
         <p className="mt-2 text-sm text-gray-600">
-          {event.location.city} • {dateTime}
+          {event.city} • {dateTime}
         </p>
       </header>
 
@@ -130,10 +153,8 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
       <section className="mt-8 rounded-xl border p-4">
         <h2 className="text-lg font-semibold">Location</h2>
         <div className="mt-2 text-sm text-gray-700">
-          <div>{event.location.venueName}</div>
-          <div>
-            {event.location.city}, {event.location.region}
-          </div>
+          <div>{event.venueName}</div>
+          <div>{event.city}</div>
         </div>
 
         {event.bookingUrl ? (
@@ -151,18 +172,11 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
       <section className="mt-6 rounded-xl border p-4">
         <h2 className="text-lg font-semibold">Add to calendar</h2>
         <a
-          href={`/api/calendar?slug=${event.slug}`}
+          href={`/api/calendar?id=${event.id}`}
           className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
           Download .ics
         </a>
-      </section>
-
-      <section className="mt-6 rounded-xl border p-4">
-        <h2 className="text-lg font-semibold">Coordinates</h2>
-        <div className="mt-2 text-sm text-gray-700">
-          {event.location.lat}, {event.location.lng}
-        </div>
       </section>
     </main>
   );

@@ -104,7 +104,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
           <div className="mt-2 flex items-start justify-between gap-3">
             <Link
-              href={`/events/${event.slug}`}
+              href={`/events/${event.id}`}
               className="hover:underline"
               title="View event details"
             >
@@ -115,7 +115,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
               <FavoriteButton eventId={event.id} />
 
               <a
-                href={`/api/calendar?slug=${event.slug}`}
+                href={`/api/calendar?id=${event.id}`}
                 className="rounded-full border px-3 py-1 text-sm hover:bg-gray-100"
                 title="Add to calendar"
               >
