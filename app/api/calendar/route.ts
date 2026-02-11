@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { dataEvents } from "@/data/events.data";
+import { fetchAppEvents } from "@/lib/api/fetchEvents";
 import { createEventIcs } from "@/lib/ics";
 
 export async function GET(req: Request) {
@@ -10,7 +10,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing slug" }, { status: 400 });
   }
 
-  const event = dataEvents.find((e) => e.slug === slug);
+  const { events } = await fetchAppEvents();
+  const event = events.find((e) => e.slug === slug || e.id === slug);
 
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });

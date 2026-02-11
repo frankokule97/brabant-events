@@ -1,27 +1,25 @@
-import type { Event } from "@/types/event";
+import type { AppEventPreview } from "@/types/appEvents";
 
 function pad2(n: number): string {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
 /** Converting ISO date string to iCalendar UTC format **/
-
 function toIcsUtc(iso: string): string {
-  const d = new Date(iso);
+  const date = new Date(iso);
   return (
-    d.getUTCFullYear().toString() +
-    pad2(d.getUTCMonth() + 1) +
-    pad2(d.getUTCDate()) +
+    date.getUTCFullYear().toString() +
+    pad2(date.getUTCMonth() + 1) +
+    pad2(date.getUTCDate()) +
     "T" +
-    pad2(d.getUTCHours()) +
-    pad2(d.getUTCMinutes()) +
-    pad2(d.getUTCSeconds()) +
+    pad2(date.getUTCHours()) +
+    pad2(date.getUTCMinutes()) +
+    pad2(date.getUTCSeconds()) +
     "Z"
   );
 }
 
 /** Escaping text according to iCalendar rules  **/
-
 function escapeIcsText(input: string): string {
   return input
     .replace(/\\/g, "\\\\")
@@ -30,30 +28,27 @@ function escapeIcsText(input: string): string {
     .replace(/;/g, "\\;");
 }
 
-function buildLocation(e: Event): string {
-  const parts = [
-    e.location.venueName,
-    e.location.address,
-    e.location.postalCode,
-    e.location.city,
-  ].filter(Boolean);
+function buildLocation(e: AppEventPreview): string {
+  const parts = [e.venueName, e.city].filter(Boolean);
   return parts.join(", ");
 }
 
-/** Creating minimal, ICS content for a single event. **/
+/** ICS content for a single event. **/
+export function createEventIcs(e: AppEventPreview): string {
+  const title = escapeIcsText(e.title || "Event");
 
-export function createEventIcs(e: Event): string {
-  const title = escapeIcsText(e.title.en ?? e.title.nl ?? "Event");
-  const description = escapeIcsText(e.description?.en ?? e.description?.nl ?? "");
+  const description = escapeIcsText(e.shortDescription ?? "");
+
   const location = escapeIcsText(buildLocation(e));
 
-  const dtStart = toIcsUtc(e.startDateTime);
-  const dtEnd = e.endDateTime
-    ? toIcsUtc(e.endDateTime)
-    : toIcsUtc(new Date(new Date(e.startDateTime).getTime() + 2 * 60 * 60 * 1000).toISOString());
+  const dateStart = toIcsUtc(e.startDateTime);
+
+  const dateEnd = toIcsUtc(
+    new Date(new Date(e.startDateTime).getTime() + 2 * 60 * 60 * 1000).toISOString(),
+  );
 
   const uid = `${e.id}@brabantevents`;
-  const dtStamp = toIcsUtc(new Date().toISOString());
+  const dateStamp = toIcsUtc(new Date().toISOString());
 
   return [
     "BEGIN:VCALENDAR",
@@ -63,13 +58,13 @@ export function createEventIcs(e: Event): string {
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${uid}`,
-    `DTSTAMP:${dtStamp}`,
-    `DTSTART:${dtStart}`,
-    `DTEND:${dtEnd}`,
+    `DTSTAMP:${dateStamp}`,
+    `DTSTART:${dateStart}`,
+    `DTEND:${dateEnd}`,
     `SUMMARY:${title}`,
     description ? `DESCRIPTION:${description}` : "",
     location ? `LOCATION:${location}` : "",
-    `URL:${escapeIcsText(e.bookingUrl ?? "")}`,
+    e.bookingUrl ? `URL:${escapeIcsText(e.bookingUrl)}` : "",
     "END:VEVENT",
     "END:VCALENDAR",
     "",

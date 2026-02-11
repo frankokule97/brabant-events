@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import type { Event } from "@/types/event";
+import type { AppEventPreview } from "@/types/appEvents";
 import { getFavoriteIds } from "@/lib/favorites";
 import { FavoriteButton } from "@/components/FavoriteButton";
 
-export function EventsListClient({
-  events,
-  favoritesOnly,
-}: {
-  events: Event[];
+type Props = {
+  events: AppEventPreview[];
   favoritesOnly: boolean;
-}) {
+};
+
+export function EventsListClient({ events, favoritesOnly }: Props) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -97,11 +96,10 @@ export function EventsListClient({
       {visibleEvents.map((event) => (
         <article key={event.id} className="rounded-xl border p-4 shadow-sm">
           <div className="text-xs text-gray-600">
-            {event.location.city} •{" "}
-            {new Date(event.startDateTime).toLocaleString("en-NL", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })}
+            {[event.city, event.venueName].filter(Boolean).join(" • ")}{" "}
+            {event.startDateTime
+              ? `• ${new Date(event.startDateTime).toLocaleString("en-NL", { dateStyle: "medium", timeStyle: "short" })}`
+              : null}
           </div>
 
           <div className="mt-2 flex items-start justify-between gap-3">
@@ -110,7 +108,7 @@ export function EventsListClient({
               className="hover:underline"
               title="View event details"
             >
-              {event.title.en ?? event.title.nl ?? "Untitled event"}
+              {event.title}
             </Link>
 
             <div className="flex items-center gap-2">
@@ -126,13 +124,9 @@ export function EventsListClient({
             </div>
           </div>
 
-          {event.description?.en || event.description?.nl ? (
-            <p className="mt-2 line-clamp-3 text-sm text-gray-700">
-              {event.description?.en ?? event.description?.nl}
-            </p>
+          {event.shortDescription ? (
+            <p className="mt-2 line-clamp-3 text-sm text-gray-700">{event.shortDescription}</p>
           ) : null}
-
-          <div className="mt-3 text-xs text-gray-600">Category: {event.category}</div>
         </article>
       ))}
     </section>

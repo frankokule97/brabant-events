@@ -1,3 +1,5 @@
+import { mapTicketmasterEventToPreview } from "@/lib/ticketmaster/mapTicketmasterEvent";
+import type { AppEventsResponse } from "@/types/appEvents";
 import { NextResponse } from "next/server";
 
 const TM_BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json";
@@ -79,7 +81,21 @@ export async function GET(req: Request) {
   }
 
   const data = await res.json();
-  return NextResponse.json(data, {
+
+  const tmEvents = data?._embedded?.events ?? [];
+  const mapped = tmEvents.map(mapTicketmasterEventToPreview).filter(Boolean);
+
+  const normalized: AppEventsResponse = {
+    events: mapped,
+    page: {
+      size: data?.page?.size ?? mapped.length,
+      totalElements: data?.page?.totalElements ?? mapped.length,
+      totalPages: data?.page?.totalPages ?? 1,
+      number: data?.page?.number ?? 0,
+    },
+  };
+
+  return NextResponse.json(normalized, {
     headers: {
       "Cache-Control": "public, s-maxage=600, stale-while-revalidate=60",
     },

@@ -1,4 +1,4 @@
-import { Event } from "@/types/event";
+type HasStartDateTime = { startDateTime: string };
 
 function startOfToday(): Date {
   const now = new Date();
@@ -10,12 +10,12 @@ function endOfToday(): Date {
   return new Date(start.getTime() + 24 * 60 * 60 * 1000 - 1);
 }
 
-export function isToday(event: Event): boolean {
+export function isToday(event: HasStartDateTime): boolean {
   const eventDate = new Date(event.startDateTime);
   return eventDate >= startOfToday() && eventDate <= endOfToday();
 }
 
-export function isThisWeekend(event: Event): boolean {
+export function isThisWeekend(event: HasStartDateTime): boolean {
   const now = new Date();
   const day = now.getDay();
 
@@ -44,7 +44,7 @@ export function isThisWeekend(event: Event): boolean {
   return eventDate >= saturday && eventDate <= sundayEnd;
 }
 
-export function isThisMonth(event: Event): boolean {
+export function isThisMonth(event: HasStartDateTime): boolean {
   const now = new Date();
   const eventDate = new Date(event.startDateTime);
 

@@ -1,9 +1,10 @@
 import { toJsonLdScript } from "@/lib/jsonLd";
 import Link from "next/link";
-import { dataEvents } from "@/data/events.data";
+import { fetchAppEvents } from "@/lib/api/fetchEvents";
 import { isToday, isThisMonth, isThisWeekend } from "@/lib/eventDateFilters";
 import { EventsListClient } from "@/components/EventsListClient";
 import { Metadata } from "next";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -25,7 +26,9 @@ export default async function EventsPage({
     rawWhen && WHEN_FILTERS.includes(rawWhen as WhenFilter) ? (rawWhen as WhenFilter) : "";
   const favoritesOnly = sp?.fav === "1";
 
-  const filteredEvents = dataEvents.filter((event) => {
+  const { events } = await fetchAppEvents();
+
+  const filteredEvents = events.filter((event) => {
     if (!when) return true;
     if (when === "today") return isToday(event);
     if (when === "weekend") return isThisWeekend(event);
@@ -33,7 +36,8 @@ export default async function EventsPage({
     return true;
   });
 
-  const isEmptyForDateFilter = filteredEvents.length === 0;
+  const isEmptyForDateFilter = !favoritesOnly && filteredEvents.length === 0;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://brabant-events.vercel.app";
 
   const listJsonLd = favoritesOnly
     ? null
@@ -43,8 +47,8 @@ export default async function EventsPage({
         itemListElement: filteredEvents.map((event, index) => ({
           "@type": "ListItem",
           position: index + 1,
-          url: `https://brabant-events.vercel.app/events/${event.slug}`,
-          name: event.title.en ?? event.title.nl ?? "Event",
+          url: `${baseUrl}/events/${event.slug}`,
+          name: event.title || "Event",
         })),
       };
 
@@ -97,7 +101,7 @@ function FilterButton({
 }: {
   href: string;
   active: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
