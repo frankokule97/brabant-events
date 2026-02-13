@@ -2,12 +2,13 @@
 
 import { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { AppEventPreview } from "@/types/appEvents";
+import type { AppEventPreview, AppEventsResponse } from "@/types/appEvents";
 import { EventsListClient } from "@/components/EventsListClient";
 
 type Props = {
   events: AppEventPreview[];
   favoritesOnly: boolean;
+  page: AppEventsResponse["page"];
 };
 
 function normalize(s: string): string {
@@ -18,7 +19,7 @@ function eventSearchHaystack(e: AppEventPreview): string {
   return [e.title, e.city, e.venueName, e.shortDescription].filter(Boolean).join(" ").toLowerCase();
 }
 
-export function EventsExplorerClient({ events, favoritesOnly }: Props) {
+export function EventsExplorerClient({ events, favoritesOnly, page }: Props) {
   const router = useRouter();
   const sp = useSearchParams();
 
