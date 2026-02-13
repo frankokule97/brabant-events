@@ -36,6 +36,8 @@ type TicketmasterEvent = {
   classifications?: Array<{
     segment?: { name?: string };
     genre?: { name?: string };
+    subGenre?: { name?: string };
+    type?: { name?: string };
   }>;
 };
 
@@ -49,8 +51,7 @@ function pickBestImageUrl(images: TicketmasterImage[] | undefined): string | und
   const ratio16x9 = preferred.find((img) => img.ratio === "16_9" && (img.width ?? 0) >= 1000);
   if (ratio16x9?.url) return ratio16x9.url;
 
-  const anyLarge = preferred[0]?.url;
-  return anyLarge;
+  return preferred[0]?.url;
 }
 
 function buildDerivedShortDescription(e: {
@@ -76,6 +77,17 @@ function buildStartDateTime(tm: TicketmasterEvent): string | null {
   return null;
 }
 
+function pickCategory(tm: TicketmasterEvent): string | undefined {
+  const primaryClassification = tm.classifications?.[0];
+  return (
+    primaryClassification?.segment?.name ||
+    primaryClassification?.genre?.name ||
+    primaryClassification?.subGenre?.name ||
+    primaryClassification?.type?.name ||
+    undefined
+  );
+}
+
 export function mapTicketmasterEventToPreview(tm: TicketmasterEvent): AppEventPreview | null {
   const id = tm.id?.trim();
   const title = tm.name?.trim();
@@ -94,6 +106,7 @@ export function mapTicketmasterEventToPreview(tm: TicketmasterEvent): AppEventPr
   const genre = tm.classifications?.[0]?.genre?.name?.trim();
 
   const shortDescription = buildDerivedShortDescription({ city, venueName, segment, genre });
+  const category = pickCategory(tm)?.trim();
 
   return {
     id,
@@ -109,5 +122,6 @@ export function mapTicketmasterEventToPreview(tm: TicketmasterEvent): AppEventPr
     bookingUrl,
 
     shortDescription,
+    category: category,
   };
 }

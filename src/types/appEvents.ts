@@ -9,6 +9,7 @@ export type AppEventPreview = {
   imageUrl?: string;
   bookingUrl?: string; // optional for now, come back and make a decision here later
   shortDescription?: string; // optional because I don't see this property inside ticketmaster event object
+  category?: string;
 };
 
 export type AppEventsResponse = {

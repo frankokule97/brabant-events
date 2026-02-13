@@ -2,9 +2,9 @@ import { toJsonLdScript } from "@/lib/jsonLd";
 import Link from "next/link";
 import { fetchAppEvents } from "@/lib/api/fetchEvents";
 import { isToday, isThisMonth, isThisWeekend } from "@/lib/eventDateFilters";
-import { EventsListClient } from "@/components/EventsListClient";
 import { Metadata } from "next";
 import type { ReactNode } from "react";
+import { EventsExplorerClient } from "@/components/EventsExplorerClient";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -88,7 +88,7 @@ export default async function EventsPage({
       {isEmptyForDateFilter ? (
         <EmptyStateServer when={when} />
       ) : (
-        <EventsListClient events={filteredEvents} favoritesOnly={favoritesOnly} />
+        <EventsExplorerClient events={filteredEvents} favoritesOnly={favoritesOnly} />
       )}
     </main>
   );
