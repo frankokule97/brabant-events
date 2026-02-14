@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { AppEventPreview } from "@/types/appEvents";
 import { EventsListClient } from "@/components/EventsListClient";
@@ -26,9 +26,18 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
   const selectedCategory = sp.get("cat") ?? "";
 
   const availableCategories = useMemo(() => {
-    const values = events.map((e) => e.category?.trim()).filter((v): v is string => Boolean(v));
+    const searchText = normalize(searchQuery);
+
+    const searchFiltered = !searchText
+      ? events
+      : events.filter((e) => eventSearchHaystack(e).includes(searchText));
+
+    const values = searchFiltered
+      .map((e) => e.category?.trim())
+      .filter((v): v is string => Boolean(v));
+
     return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-  }, [events]);
+  }, [events, searchQuery]);
 
   const filteredEvents = useMemo(() => {
     const searchText = normalize(searchQuery);
@@ -41,13 +50,16 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
     });
   }, [events, searchQuery, selectedCategory]);
 
-  function replaceSearchParams(mutator: (next: URLSearchParams) => void) {
-    const next = new URLSearchParams(sp.toString());
-    mutator(next);
+  const replaceSearchParams = useCallback(
+    (mutator: (next: URLSearchParams) => void) => {
+      const next = new URLSearchParams(sp.toString());
+      mutator(next);
 
-    const qs = next.toString();
-    router.replace(qs ? `/events?${qs}` : "/events");
-  }
+      const qs = next.toString();
+      router.replace(qs ? `/events?${qs}` : "/events");
+    },
+    [router, sp],
+  );
 
   function updateUrlParam(key: "q" | "cat", value: string) {
     replaceSearchParams((next) => {
@@ -58,6 +70,19 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
       next.delete("p"); // reseting pagination when filters change
     });
   }
+
+  useEffect(() => {
+    if (!selectedCategory) return;
+    const normalizedSelected = normalize(selectedCategory);
+
+    const stillValid = availableCategories.some((c) => normalize(c) === normalizedSelected);
+    if (!stillValid) {
+      replaceSearchParams((next) => {
+        next.delete("cat");
+        next.delete("p");
+      });
+    }
+  }, [selectedCategory, availableCategories, replaceSearchParams]);
 
   function clearFilters() {
     replaceSearchParams((next) => {
