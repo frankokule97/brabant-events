@@ -165,7 +165,7 @@ export default async function EventsPage({
         itemListElement: events.map((event, index) => ({
           "@type": "ListItem",
           position: index + 1,
-          url: `${baseUrl}/events/${event.slug}`,
+          url: `${baseUrl}/events/${event.id}`,
           name: event.title || "Event",
         })),
       };
@@ -206,7 +206,7 @@ export default async function EventsPage({
       {isEmptyForDateFilter ? (
         <EmptyStateServer when={when} />
       ) : (
-        <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} page={page} />
+        <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} />
       )}
       {page.totalPages > 1 ? (
         <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
