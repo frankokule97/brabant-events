@@ -41,23 +41,30 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
     });
   }, [events, searchQuery, selectedCategory]);
 
-  function updateUrlParam(key: "q" | "cat", value: string) {
+  function replaceSearchParams(mutator: (next: URLSearchParams) => void) {
     const next = new URLSearchParams(sp.toString());
-
-    if (value.trim()) next.set(key, value.trim());
-    else next.delete(key);
+    mutator(next);
 
     const qs = next.toString();
     router.replace(qs ? `/events?${qs}` : "/events");
   }
 
-  function clearFilters() {
-    const nextSearchParams = new URLSearchParams(sp.toString());
-    nextSearchParams.delete("q");
-    nextSearchParams.delete("cat");
+  function updateUrlParam(key: "q" | "cat", value: string) {
+    replaceSearchParams((next) => {
+      const v = value.trim();
+      if (v) next.set(key, v);
+      else next.delete(key);
 
-    const nextQueryString = nextSearchParams.toString();
-    router.replace(nextQueryString ? `/events?${nextQueryString}` : "/events");
+      next.delete("p"); // reseting pagination when filters change
+    });
+  }
+
+  function clearFilters() {
+    replaceSearchParams((next) => {
+      next.delete("q");
+      next.delete("cat");
+      next.delete("p");
+    });
   }
 
   return (
