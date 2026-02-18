@@ -61,15 +61,18 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
     [router, sp],
   );
 
-  function updateUrlParam(key: "q" | "cat", value: string) {
-    replaceSearchParams((next) => {
-      const v = value.trim();
-      if (v) next.set(key, v);
-      else next.delete(key);
+  const updateUrlParam = useCallback(
+    (key: "q" | "cat", value: string) => {
+      replaceSearchParams((next) => {
+        const v = value.trim();
+        if (v) next.set(key, v);
+        else next.delete(key);
 
-      next.delete("p"); // reseting pagination when filters change
-    });
-  }
+        next.delete("p"); // resetting pagination when filters change
+      });
+    },
+    [replaceSearchParams],
+  );
 
   useEffect(() => {
     if (!selectedCategory) return;
@@ -84,13 +87,13 @@ export function EventsExplorerClient({ events, favoritesOnly }: Props) {
     }
   }, [selectedCategory, availableCategories, replaceSearchParams]);
 
-  function clearFilters() {
+  const clearFilters = useCallback(() => {
     replaceSearchParams((next) => {
       next.delete("q");
       next.delete("cat");
       next.delete("p");
     });
-  }
+  }, [replaceSearchParams]);
 
   return (
     <div className="space-y-4">
