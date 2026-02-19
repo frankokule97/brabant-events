@@ -4,6 +4,7 @@ import { fetchAppEvents } from "@/lib/api/fetchEvents";
 import { Metadata } from "next";
 import type { ReactNode } from "react";
 import { EventsExplorerClient } from "@/components/EventsExplorerClient";
+import { messages, type Locale } from "@/i18n/messages";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -15,10 +16,14 @@ const WHEN_FILTERS = ["today", "weekend", "month"] as const;
 type WhenFilter = (typeof WHEN_FILTERS)[number];
 
 export default async function EventsPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: Locale }>;
   searchParams?: Promise<{ when?: string; fav?: string; q?: string; cat?: string; p?: string }>;
 }) {
+  const { locale } = await params;
+  const t = messages[locale] ?? messages.en;
   const sp = await searchParams;
   const rawWhen = sp?.when;
   const when: WhenFilter | "" =
@@ -41,7 +46,11 @@ export default async function EventsPage({
     if (targetPage > 1) params.set("p", String(targetPage));
 
     const qs = params.toString();
-    return qs ? `/events?${qs}` : "/events";
+    return qs ? withLocale(`/events?${qs}`) : withLocale("/events");
+  }
+
+  function withLocale(path: string): string {
+    return `/${locale}${path.startsWith("/") ? path : `/${path}`}`;
   }
 
   // showing 1 as a first page inside URL
@@ -165,7 +174,7 @@ export default async function EventsPage({
         itemListElement: events.map((event, index) => ({
           "@type": "ListItem",
           position: index + 1,
-          url: `${baseUrl}/events/${event.id}`,
+          url: `${baseUrl}/${locale}/events/${event.id}`,
           name: event.title || "Event",
         })),
       };
@@ -183,20 +192,20 @@ export default async function EventsPage({
         <p className="mt-2 text-sm text-gray-600">Discover events in North Brabant.</p>
 
         <nav className="mt-4 flex flex-wrap gap-2">
-          <FilterButton href="/events" active={!when}>
+          <FilterButton href={withLocale("/events")} active={!when}>
             All
           </FilterButton>
-          <FilterButton href="/events?when=today" active={when === "today"}>
+          <FilterButton href={withLocale("/events?when=today")} active={when === "today"}>
             Today
           </FilterButton>
-          <FilterButton href="/events?when=weekend" active={when === "weekend"}>
+          <FilterButton href={withLocale("/events?when=weekend")} active={when === "weekend"}>
             This weekend
           </FilterButton>
-          <FilterButton href="/events?when=month" active={when === "month"}>
+          <FilterButton href={withLocale("/events?when=month")} active={when === "month"}>
             This month
           </FilterButton>
           <FilterButton
-            href={`/events${when ? `?when=${when}&fav=1` : "?fav=1"}`}
+            href={withLocale(`/events${when ? `?when=${when}&fav=1` : "?fav=1"}`)}
             active={favoritesOnly}
           >
             Favorites
@@ -204,9 +213,9 @@ export default async function EventsPage({
         </nav>
       </header>
       {isEmptyForDateFilter ? (
-        <EmptyStateServer when={when} />
+        <EmptyStateServer when={when} locale={locale} />
       ) : (
-        <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} />
+        <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} labels={t.filters} />
       )}
       {page.totalPages > 1 ? (
         <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
@@ -278,7 +287,7 @@ function FilterButton({
   );
 }
 
-function EmptyStateServer({ when }: { when: WhenFilter | "" }) {
+function EmptyStateServer({ when, locale }: { when: WhenFilter | ""; locale: Locale }) {
   const label =
     when === "today"
       ? "today"
@@ -299,7 +308,7 @@ function EmptyStateServer({ when }: { when: WhenFilter | "" }) {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
-          href="/events"
+          href={`/${locale}/events`}
           className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
           Reset filters

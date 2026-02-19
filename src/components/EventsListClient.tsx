@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { AppEventPreview } from "@/types/appEvents";
 import { getFavoriteIds } from "@/lib/favorites";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { useParams } from "next/navigation";
 
 type Props = {
   events: AppEventPreview[];
@@ -13,6 +14,13 @@ type Props = {
 
 export function EventsListClient({ events, favoritesOnly }: Props) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string> | null>(null);
+
+  const params = useParams<{ locale?: string }>();
+  const locale = params?.locale === "nl" ? "nl" : "en";
+
+  function withLocale(path: string): string {
+    return `/${locale}${path.startsWith("/") ? path : `/${path}`}`;
+  }
 
   useEffect(() => {
     const refresh = () => {
@@ -49,7 +57,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
         <div className="mt-4">
           <Link
-            href="/events"
+            href={withLocale("/events")}
             className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
           >
             Show all events
@@ -72,7 +80,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
-            href="/events"
+            href={withLocale("/events")}
             className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
           >
             Reset filters
@@ -80,7 +88,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
           {favoritesOnly ? (
             <Link
-              href="/events?fav=1"
+              href={withLocale("/events?fav=1")}
               className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
             >
               Show all favorites
@@ -104,7 +112,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
           <div className="mt-2 flex items-start justify-between gap-3">
             <Link
-              href={`/events/${event.id}`}
+              href={withLocale(`/events/${event.id}`)}
               className="hover:underline"
               title="View event details"
             >
