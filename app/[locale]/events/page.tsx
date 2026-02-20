@@ -188,32 +188,32 @@ export default async function EventsPage({
         />
       ) : null}
       <header className="mb-6">
-        <h1 className="text-3xl font-semibold">Events</h1>
-        <p className="mt-2 text-sm text-gray-600">Discover events in North Brabant.</p>
+        <h1 className="text-3xl font-semibold">{t.events.title}</h1>
+        <p className="mt-2 text-sm text-gray-600">{t.events.subtitle}</p>
 
         <nav className="mt-4 flex flex-wrap gap-2">
           <FilterButton href={withLocale("/events")} active={!when}>
-            All
+            {t.events.whenAll}
           </FilterButton>
           <FilterButton href={withLocale("/events?when=today")} active={when === "today"}>
-            Today
+            {t.events.whenToday}
           </FilterButton>
           <FilterButton href={withLocale("/events?when=weekend")} active={when === "weekend"}>
-            This weekend
+            {t.events.whenWeekend}
           </FilterButton>
           <FilterButton href={withLocale("/events?when=month")} active={when === "month"}>
-            This month
+            {t.events.whenMonth}
           </FilterButton>
           <FilterButton
             href={withLocale(`/events${when ? `?when=${when}&fav=1` : "?fav=1"}`)}
             active={favoritesOnly}
           >
-            Favorites
+            {t.events.favorites}
           </FilterButton>
         </nav>
       </header>
       {isEmptyForDateFilter ? (
-        <EmptyStateServer when={when} locale={locale} />
+        <EmptyStateServer when={when} locale={locale} t={t} />
       ) : (
         <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} labels={t.filters} />
       )}
@@ -227,7 +227,7 @@ export default async function EventsPage({
               currentPage === 1 ? "pointer-events-none opacity-50" : "hover:bg-gray-100",
             ].join(" ")}
           >
-            Prev
+            {t.events.prev}
           </Link>
 
           {getVisiblePages().map((item, idx) =>
@@ -257,7 +257,7 @@ export default async function EventsPage({
               currentPage === totalPages ? "pointer-events-none opacity-50" : "hover:bg-gray-100",
             ].join(" ")}
           >
-            Next
+            {t.events.next}
           </Link>
         </nav>
       ) : null}
@@ -287,23 +287,29 @@ function FilterButton({
   );
 }
 
-function EmptyStateServer({ when, locale }: { when: WhenFilter | ""; locale: Locale }) {
+function EmptyStateServer({
+  when,
+  locale,
+  t,
+}: {
+  when: WhenFilter | "";
+  locale: Locale;
+  t: (typeof messages)[Locale];
+}) {
   const label =
     when === "today"
-      ? "today"
+      ? t.events.whenToday.toLowerCase()
       : when === "weekend"
-        ? "this weekend"
+        ? t.events.whenWeekend.toLowerCase()
         : when === "month"
-          ? "this month"
+          ? t.events.whenMonth.toLowerCase()
           : "";
 
   return (
     <section className="rounded-xl border p-6">
-      <h2 className="text-lg font-semibold">No events found</h2>
+      <h2 className="text-lg font-semibold">{t.events.emptyTitle}</h2>
       <p className="mt-2 text-sm text-gray-600">
-        {label
-          ? `There are no events scheduled ${label}.`
-          : `There are no events to show right now.`}
+        {label ? t.events.emptyNoneFor.replace("{{label}}", label) : t.events.emptyNoneNow}
       </p>
 
       <div className="mt-4 flex flex-wrap gap-2">
@@ -311,7 +317,7 @@ function EmptyStateServer({ when, locale }: { when: WhenFilter | ""; locale: Loc
           href={`/${locale}/events`}
           className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
-          Reset filters
+          {t.events.resetFilters}
         </Link>
       </div>
     </section>
