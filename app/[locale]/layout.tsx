@@ -1,14 +1,23 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { messages, type Locale } from "@/i18n/messages";
+
+const LOCALES = ["en", "nl"] as const;
+
+function isLocale(value: string): value is Locale {
+  return (LOCALES as readonly string[]).includes(value);
+}
 
 type Props = {
   children: ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: { locale: string };
 };
 
-export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
+export default function LocaleLayout({ children, params }: Props) {
+  if (!isLocale(params.locale)) notFound();
+
+  const locale = params.locale; // now typed as Locale
   const t = messages[locale] ?? messages.en;
 
   return (
