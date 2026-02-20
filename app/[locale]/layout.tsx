@@ -11,13 +11,15 @@ function isLocale(value: string): value is Locale {
 
 type Props = {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export default function LocaleLayout({ children, params }: Props) {
-  if (!isLocale(params.locale)) notFound();
+export default async function LocaleLayout({ children, params }: Props) {
+  const { locale: rawLocale } = await params;
 
-  const locale = params.locale; // now typed as Locale
+  if (!isLocale(rawLocale)) notFound();
+
+  const locale = rawLocale;
   const t = messages[locale] ?? messages.en;
 
   return (
