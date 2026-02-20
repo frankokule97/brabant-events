@@ -52,6 +52,9 @@ export const messages = {
       emptyNoneFor: "There are no events scheduled {{label}}.",
       resetFilters: "Reset filters",
     },
+    common: {
+      current: "Current",
+    },
   },
   nl: {
     nav: {
@@ -105,6 +108,9 @@ export const messages = {
       emptyNoneNow: "Er zijn momenteel geen evenementen om weer te geven.",
       emptyNoneFor: "Er zijn geen evenementen gepland {{label}}.",
       resetFilters: "Filters resetten",
+    },
+    common: {
+      current: "Huidig",
     },
   },
 } as const;

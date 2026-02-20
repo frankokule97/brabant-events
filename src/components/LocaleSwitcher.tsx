@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { messages } from "@/i18n/messages";
 
 type Locale = "en" | "nl";
 
@@ -37,6 +38,8 @@ export function LocaleSwitcher() {
   const searchParams = useSearchParams();
 
   const currentLocale: Locale = isLocale(params?.locale) ? params.locale : "en";
+  const t = messages[currentLocale] ?? messages.en;
+
   const search = searchParams.toString();
 
   const items = useMemo(
@@ -122,10 +125,8 @@ export function LocaleSwitcher() {
             "border-white/15 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800",
           ].join(" ")}
         >
-          {/* Hero-like radial overlay */}
           <div className="absolute inset-0 opacity-40 [background:radial-gradient(900px_circle_at_20%_20%,rgba(255,255,255,0.18),transparent_55%),radial-gradient(700px_circle_at_80%_0%,rgba(255,255,255,0.12),transparent_50%)]" />
 
-          {/* Content layer above the overlay */}
           <div className="relative">
             {items.map(({ locale, href }) => {
               const active = locale === currentLocale;
@@ -146,7 +147,7 @@ export function LocaleSwitcher() {
                     {flag(locale)}
                   </span>
                   <span className="flex-1">{label(locale)}</span>
-                  {active && <span className="text-xs text-white/60">Current</span>}
+                  {active && <span className="text-xs text-white/60">{t.common.current}</span>}
                 </Link>
               );
             })}
