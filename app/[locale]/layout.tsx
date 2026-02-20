@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { messages, type Locale } from "@/i18n/messages";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
 const LOCALES = ["en", "nl"] as const;
 
@@ -30,14 +31,17 @@ export default async function LocaleLayout({ children, params }: Props) {
             BrabantEvents
           </Link>
 
-          <nav className="flex gap-4 text-sm">
-            <Link href={`/${locale}`} className="hover:underline">
-              {t.nav.home}
-            </Link>
-            <Link href={`/${locale}/events`} className="hover:underline">
-              {t.nav.events}
-            </Link>
-          </nav>
+          <div className="flex items-center gap-4">
+            <nav className="flex items-center gap-4 text-sm">
+              <Link href={`/${locale}`} className="hover:underline">
+                {t.nav.home}
+              </Link>
+              <Link href={`/${locale}/events`} className="hover:underline">
+                {t.nav.events}
+              </Link>
+            </nav>
+            <LocaleSwitcher />
+          </div>
         </div>
       </header>
 
