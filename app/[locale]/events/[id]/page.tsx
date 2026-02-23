@@ -104,6 +104,9 @@ export default async function EventDetailsPage({
       timeStyle: "short",
     },
   );
+  const mapsQuery = [event.venueName, event.city].filter(Boolean).join(", ");
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
+  const mapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapsQuery)}&output=embed`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -171,6 +174,23 @@ export default async function EventDetailsPage({
             {t.event.bookTickets}
           </a>
         ) : null}
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+        >
+          {t.event.openInMaps} →
+        </a>
+        <div className="mt-4 overflow-hidden rounded-lg border">
+          <iframe
+            title={`${title} map`}
+            src={mapsEmbedUrl}
+            className="h-72 w-full"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
       </section>
 
       <section className="mt-6 rounded-xl border p-4">

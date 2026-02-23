@@ -71,6 +71,7 @@ export const messages = {
       fallbackDescription: "Event at {{venue}} in {{city}}.",
       notFoundBody:
         "This event link may be outdated or the event was removed. Please go back to the events list.",
+      openInMaps: "Open in Google Maps",
     },
     eventsList: {
       loadingFavorites: "Loading favorites…",
@@ -160,6 +161,7 @@ export const messages = {
       fallbackDescription: "Evenement bij {{venue}} in {{city}}.",
       notFoundBody:
         "Deze link is mogelijk verouderd of het evenement is verwijderd. Ga terug naar de evenementenlijst.",
+      openInMaps: "Openen in Google Maps",
     },
     eventsList: {
       loadingFavorites: "Favorieten laden…",
