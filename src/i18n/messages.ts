@@ -72,6 +72,21 @@ export const messages = {
       notFoundBody:
         "This event link may be outdated or the event was removed. Please go back to the events list.",
     },
+    eventsList: {
+      loadingFavorites: "Loading favorites…",
+      noFavoritesTitle: "No favorites yet",
+      noFavoritesBody: "Click the star on an event to add it to favorites.",
+      showAllEvents: "Show all events",
+
+      nothingToShowTitle: "Nothing to show",
+      noFavoritesMatchFilter: "None of your favorited events match the current filter.",
+      noEventsMatchFilter: "No events match the current filter.",
+      resetFilters: "Reset filters",
+      showAllFavorites: "Show all favorites",
+
+      viewDetailsTitle: "View event details",
+      addToCalendarTitle: "Add to calendar",
+    },
   },
   nl: {
     nav: {
@@ -145,6 +160,21 @@ export const messages = {
       fallbackDescription: "Evenement bij {{venue}} in {{city}}.",
       notFoundBody:
         "Deze link is mogelijk verouderd of het evenement is verwijderd. Ga terug naar de evenementenlijst.",
+    },
+    eventsList: {
+      loadingFavorites: "Favorieten laden…",
+      noFavoritesTitle: "Nog geen favorieten",
+      noFavoritesBody: "Klik op de ster bij een evenement om het toe te voegen aan je favorieten.",
+      showAllEvents: "Toon alle evenementen",
+
+      nothingToShowTitle: "Niets om te tonen",
+      noFavoritesMatchFilter: "Geen van je favorieten past bij het huidige filter.",
+      noEventsMatchFilter: "Geen evenementen passen bij het huidige filter.",
+      resetFilters: "Filters resetten",
+      showAllFavorites: "Toon alle favorieten",
+
+      viewDetailsTitle: "Bekijk details",
+      addToCalendarTitle: "Toevoegen aan agenda",
     },
   },
 } as const;
