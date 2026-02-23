@@ -2,20 +2,22 @@ import { toJsonLdScript } from "@/lib/jsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { messages, type Locale } from "@/i18n/messages";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { locale, id } = await params;
+  const t = messages[locale] ?? messages.en;
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   if (!baseUrl) {
     return {
-      title: "Event not found",
-      description: "The requested event could not be found.",
+      title: t.event.notFoundTitle,
+      description: t.event.notFoundDescription,
       robots: { index: false, follow: false },
     };
   }
@@ -26,8 +28,8 @@ export async function generateMetadata({
 
   if (res.status === 404 || !res.ok) {
     return {
-      title: "Event not found",
-      description: "The requested event could not be found.",
+      title: t.event.notFoundTitle,
+      description: t.event.notFoundDescription,
       robots: { index: false, follow: false },
     };
   }
@@ -41,46 +43,45 @@ export async function generateMetadata({
     imageUrl: string | null;
   };
 
-  const title = event.title ?? "Event";
+  const title = event.title?.trim() || t.event.fallbackTitle;
+
   const description =
     event.shortDescription?.trim() ||
-    `Event at ${event.venueName || "venue"} in ${event.city || "the Netherlands"}.`;
+    t.event.fallbackDescription
+      .replace("{{venue}}", event.venueName || t.event.fallbackVenue)
+      .replace("{{city}}", event.city || t.event.fallbackCity);
 
   const shortDescription = description.length > 160 ? description.slice(0, 160) : description;
 
-  const url = `https://brabant-events.vercel.app/events/${event.id}`;
-  const eventImage = event.imageUrl ?? "/brabant-events.png";
+  const url = `${baseUrl}/${locale}/events/${event.id}`;
+  const eventImage = event.imageUrl ?? `${baseUrl}/brabant-events.png`;
 
   return {
     title,
     description: shortDescription,
-
     openGraph: {
       title,
       description: shortDescription,
       url,
       type: "article",
-      images: [
-        {
-          url: eventImage,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      images: [{ url: eventImage, width: 1200, height: 630, alt: title }],
     },
-
     twitter: {
       card: "summary_large_image",
-      title: title,
+      title,
       description: shortDescription,
       images: [eventImage],
     },
   };
 }
 
-export default async function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function EventDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string; locale: Locale }>;
+}) {
+  const { id, locale } = await params;
+  const t = messages[locale] ?? messages.en;
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   if (!baseUrl) return notFound();
@@ -96,10 +97,13 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
 
   const title = event.title?.trim() ?? "Event";
   const description = event.shortDescription?.trim() ?? "";
-  const dateTime = new Date(event.startDateTime).toLocaleString("en-GB", {
-    dateStyle: "full",
-    timeStyle: "short",
-  });
+  const dateTime = new Date(event.startDateTime).toLocaleString(
+    locale === "nl" ? "nl-NL" : "en-GB",
+    {
+      dateStyle: "full",
+      timeStyle: "short",
+    },
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -107,7 +111,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
     name: title,
     description: description || undefined,
     startDate: event.startDateTime,
-    url: `https://brabant-events.vercel.app/events/${event.id}`,
+    url: `${baseUrl}/${locale}/events/${event.id}`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: {
@@ -135,8 +139,8 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
         dangerouslySetInnerHTML={{ __html: toJsonLdScript(jsonLd) }}
       />
 
-      <Link href="/events" className="text-sm underline">
-        ← Back to events
+      <Link href={`/${locale}/events`} className="text-sm underline">
+        ← {t.event.backToEvents}
       </Link>
 
       <header className="mt-6">
@@ -151,7 +155,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
       ) : null}
 
       <section className="mt-8 rounded-xl border p-4">
-        <h2 className="text-lg font-semibold">Location</h2>
+        <h2 className="text-lg font-semibold">{t.event.locationTitle}</h2>
         <div className="mt-2 text-sm text-gray-700">
           <div>{event.venueName}</div>
           <div>{event.city}</div>
@@ -164,18 +168,18 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ i
             rel="noreferrer"
             className="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
           >
-            Book tickets →
+            {t.event.bookTickets}
           </a>
         ) : null}
       </section>
 
       <section className="mt-6 rounded-xl border p-4">
-        <h2 className="text-lg font-semibold">Add to calendar</h2>
+        <h2 className="text-lg font-semibold">{t.event.calendarTitle}</h2>
         <a
           href={`/api/calendar?id=${event.id}`}
           className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
-          Download .ics
+          {t.event.downloadIcs}
         </a>
       </section>
     </main>

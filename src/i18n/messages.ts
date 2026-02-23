@@ -55,6 +55,23 @@ export const messages = {
     common: {
       current: "Current",
     },
+    event: {
+      backToEvents: "Back to events",
+      locationTitle: "Location",
+      bookTickets: "Book tickets →",
+      calendarTitle: "Add to calendar",
+      downloadIcs: "Download .ics",
+
+      notFoundTitle: "Event not found",
+      notFoundDescription: "The requested event could not be found.",
+
+      fallbackTitle: "Event",
+      fallbackVenue: "venue",
+      fallbackCity: "the Netherlands",
+      fallbackDescription: "Event at {{venue}} in {{city}}.",
+      notFoundBody:
+        "This event link may be outdated or the event was removed. Please go back to the events list.",
+    },
   },
   nl: {
     nav: {
@@ -111,6 +128,23 @@ export const messages = {
     },
     common: {
       current: "Huidig",
+    },
+    event: {
+      backToEvents: "Terug naar evenementen",
+      locationTitle: "Locatie",
+      bookTickets: "Tickets boeken →",
+      calendarTitle: "Toevoegen aan agenda",
+      downloadIcs: ".ics downloaden",
+
+      notFoundTitle: "Evenement niet gevonden",
+      notFoundDescription: "Het opgevraagde evenement kon niet worden gevonden.",
+
+      fallbackTitle: "Evenement",
+      fallbackVenue: "locatie",
+      fallbackCity: "Nederland",
+      fallbackDescription: "Evenement bij {{venue}} in {{city}}.",
+      notFoundBody:
+        "Deze link is mogelijk verouderd of het evenement is verwijderd. Ga terug naar de evenementenlijst.",
     },
   },
 } as const;
