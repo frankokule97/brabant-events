@@ -168,7 +168,7 @@ export default async function EventDetailsPage({
           <a
             href={event.bookingUrl}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
           >
             {t.event.bookTickets}
@@ -177,14 +177,14 @@ export default async function EventDetailsPage({
         <a
           href={mapsUrl}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
           {t.event.openInMaps} →
         </a>
         <div className="mt-4 overflow-hidden rounded-lg border">
           <iframe
-            title={`${title} map`}
+            title={`${t.event.locationTitle}: ${mapsQuery}`}
             src={mapsEmbedUrl}
             className="h-72 w-full"
             loading="lazy"
@@ -197,6 +197,7 @@ export default async function EventDetailsPage({
         <h2 className="text-lg font-semibold">{t.event.calendarTitle}</h2>
         <a
           href={`/api/calendar?id=${event.id}`}
+          aria-label={`${t.event.calendarTitle}: ${t.event.downloadIcs}`}
           className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
         >
           {t.event.downloadIcs}
