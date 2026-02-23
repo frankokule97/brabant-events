@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useCallback } from "react";
+import { useMemo, useEffect, useCallback, useDeferredValue, useState, useRef } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import type { AppEventPreview } from "@/types/appEvents";
 import { EventsListClient } from "@/components/EventsListClient";
@@ -34,33 +34,63 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
   const router = useRouter();
   const sp = useSearchParams();
 
-  const searchQuery = sp.get("q") ?? "";
+  const urlSearchQuery = sp.get("q") ?? "";
+  const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  const debounceRef = useRef<number | null>(null);
   const selectedCategory = sp.get("cat") ?? "";
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const isFocused = inputRef.current && document.activeElement === inputRef.current;
+    if (isFocused) return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearchQuery(urlSearchQuery);
+  }, [urlSearchQuery]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, []);
+
+  const eventIndex = useMemo(() => {
+    return events.map((e) => ({
+      event: e,
+      haystack: eventSearchHaystack(e),
+      categoryNorm: normalize(e.category ?? ""),
+    }));
+  }, [events]);
+
   const availableCategories = useMemo(() => {
-    const searchText = normalize(searchQuery);
+    const searchText = normalize(deferredSearchQuery);
 
     const searchFiltered = !searchText
-      ? events
-      : events.filter((e) => eventSearchHaystack(e).includes(searchText));
+      ? eventIndex
+      : eventIndex.filter((x) => x.haystack.includes(searchText));
 
     const values = searchFiltered
-      .map((e) => e.category?.trim())
+      .map((x) => x.event.category?.trim())
       .filter((v): v is string => Boolean(v));
 
     return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-  }, [events, searchQuery]);
+  }, [eventIndex, deferredSearchQuery]);
 
   const filteredEvents = useMemo(() => {
-    const searchText = normalize(searchQuery);
+    const searchText = normalize(deferredSearchQuery);
     const categoryText = normalize(selectedCategory);
 
-    return events.filter((e) => {
-      if (categoryText && normalize(e.category ?? "") !== categoryText) return false;
-      if (!searchText) return true;
-      return eventSearchHaystack(e).includes(searchText);
-    });
-  }, [events, searchQuery, selectedCategory]);
+    return eventIndex
+      .filter((x) => {
+        if (categoryText && x.categoryNorm !== categoryText) return false;
+        if (!searchText) return true;
+        return x.haystack.includes(searchText);
+      })
+      .map((x) => x.event);
+  }, [eventIndex, deferredSearchQuery, selectedCategory]);
 
   const replaceSearchParams = useCallback(
     (mutator: (next: URLSearchParams) => void) => {
@@ -100,12 +130,13 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
   }, [selectedCategory, availableCategories, replaceSearchParams]);
 
   const clearFilters = useCallback(() => {
+    setSearchQuery("");
     replaceSearchParams((next) => {
       next.delete("q");
       next.delete("cat");
       next.delete("p");
     });
-  }, [replaceSearchParams]);
+  }, [replaceSearchParams, setSearchQuery]);
 
   return (
     <div className="space-y-4">
@@ -114,8 +145,18 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-900">{labels.searchLabel}</label>
             <input
+              ref={inputRef}
               value={searchQuery}
-              onChange={(e) => updateUrlParam("q", e.target.value)}
+              onChange={(e) => {
+                const nextValue = e.target.value;
+                setSearchQuery(nextValue);
+
+                if (debounceRef.current) window.clearTimeout(debounceRef.current);
+
+                debounceRef.current = window.setTimeout(() => {
+                  updateUrlParam("q", nextValue);
+                }, 200);
+              }}
               placeholder={labels.searchPlaceholder}
               className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
             />
