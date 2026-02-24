@@ -129,10 +129,14 @@ export default async function EventsPage({
     apiEndDateTime = toTmIso(endOfMonthUtc(now));
   }
 
+  const keyword = sp?.q?.trim();
+  const apiKeyword = keyword && keyword.length >= 3 ? keyword : undefined;
+
   const { events, page } = await fetchAppEvents({
     page: pageIndex,
     startDateTime: apiStartDateTime,
     endDateTime: apiEndDateTime,
+    keyword: apiKeyword,
   });
 
   const totalPages = page.totalPages;
@@ -163,7 +167,8 @@ export default async function EventsPage({
     return result;
   }
 
-  const isEmptyForDateFilter = !favoritesOnly && events.length === 0;
+  const hasClientFilters = Boolean(sp?.q?.trim()) || Boolean(sp?.cat?.trim());
+  const isEmptyForDateFilter = !favoritesOnly && !hasClientFilters && events.length === 0;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://brabant-events.vercel.app";
 
   const listJsonLd = favoritesOnly

@@ -14,6 +14,7 @@ type Props = {
 type Labels = {
   searchLabel: string;
   searchPlaceholder: string;
+  searchHelpNoResults: string;
   categoryLabel: string;
   allCategories: string;
   clearFilters: string;
@@ -141,7 +142,7 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
   return (
     <div className="space-y-4">
       <div className="rounded-xl border p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-900">{labels.searchLabel}</label>
             <input
@@ -160,6 +161,9 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
               placeholder={labels.searchPlaceholder}
               className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
             />
+            {searchQuery.trim() && filteredEvents.length === 0 ? (
+              <p className="mt-2 text-sm text-red-500">{labels.searchHelpNoResults}</p>
+            ) : null}
           </div>
 
           <div className="sm:w-64">

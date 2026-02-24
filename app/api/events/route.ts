@@ -39,6 +39,7 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
 
+  const keyword = url.searchParams.get("keyword");
   const countryCode = url.searchParams.get("countryCode") ?? DEFAULTS.countryCode;
   const geoPoint = url.searchParams.get("geoPoint") ?? DEFAULTS.geoPoint;
   const radius = url.searchParams.get("radius") ?? DEFAULTS.radius;
@@ -51,6 +52,7 @@ export async function GET(req: Request) {
   const endDateTime = url.searchParams.get("endDateTime") ?? getDefaultEndDateTime(12);
 
   const tmUrl = new URL(TM_BASE_URL);
+  if (keyword?.trim()) tmUrl.searchParams.set("keyword", keyword.trim());
   tmUrl.searchParams.set("apikey", apiKey);
   tmUrl.searchParams.set("countryCode", countryCode);
   tmUrl.searchParams.set("geoPoint", geoPoint);

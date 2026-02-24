@@ -4,6 +4,7 @@ type FetchAppEventsOptions = {
   page?: number;
   startDateTime?: string;
   endDateTime?: string;
+  keyword?: string; // ✅ add
 };
 
 const emptyResponse: AppEventsResponse = {
@@ -17,31 +18,21 @@ export async function fetchAppEvents(
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   if (!baseUrl) {
-    // Keeping the response stable even if env variable is missing
     return emptyResponse;
   }
 
   const url = new URL(`${baseUrl}/api/events`);
 
-  if (typeof options.page === "number") {
-    url.searchParams.set("page", String(options.page));
+  if (typeof options.page === "number") url.searchParams.set("page", String(options.page));
+  if (options.startDateTime) url.searchParams.set("startDateTime", options.startDateTime);
+  if (options.endDateTime) url.searchParams.set("endDateTime", options.endDateTime);
+
+  if (options.keyword?.trim()) {
+    url.searchParams.set("keyword", options.keyword.trim());
   }
 
-  if (options.startDateTime) {
-    url.searchParams.set("startDateTime", options.startDateTime);
-  }
-
-  if (options.endDateTime) {
-    url.searchParams.set("endDateTime", options.endDateTime);
-  }
-
-  const res = await fetch(url.toString(), {
-    next: { revalidate: 600 },
-  });
-
-  if (!res.ok) {
-    return emptyResponse;
-  }
+  const res = await fetch(url.toString(), { next: { revalidate: 600 } });
+  if (!res.ok) return emptyResponse;
 
   return (await res.json()) as AppEventsResponse;
 }

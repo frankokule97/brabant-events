@@ -7,9 +7,11 @@ export const messages = {
     filters: {
       searchLabel: "Search",
       searchPlaceholder: "Search by title, city, venue...",
+      searchHelpNoResults:
+        "No results found. Search works only with full city, venue, or event names in North Brabant (for example: “Breda”).",
       categoryLabel: "Category",
       allCategories: "All categories",
-      clearFilters: "Clear filters",
+      clearFilters: "Clear search filter",
     },
     home: {
       heroTitle: "Discover events in Noord-Brabant",
@@ -97,9 +99,11 @@ export const messages = {
     filters: {
       searchLabel: "Zoeken",
       searchPlaceholder: "Zoek op titel, stad, locatie...",
+      searchHelpNoResults:
+        "Geen resultaten gevonden. Zoeken werkt alleen met volledige plaats-, locatie- of evenementnamen in Noord-Brabant (bijvoorbeeld: 'Breda').",
       categoryLabel: "Categorie",
       allCategories: "Alle categorieën",
-      clearFilters: "Filters wissen",
+      clearFilters: "Zoekfilter wissen",
     },
     home: {
       heroTitle: "Ontdek events in Noord-Brabant",
