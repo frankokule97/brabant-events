@@ -6,8 +6,8 @@ const TM_BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json";
 
 const DEFAULTS = {
   countryCode: "NL",
-  geoPoint: "51.52575,5.1114",
-  radius: "80",
+  geoPoint: "51.55,5.10",
+  radius: "55",
   unit: "km",
   size: "20",
   sort: "date,asc",
