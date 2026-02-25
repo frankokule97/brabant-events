@@ -1,8 +1,10 @@
 import { toJsonLdScript } from "@/lib/jsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { messages, type Locale } from "@/i18n/messages";
+import { MapPin, Calendar } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -96,7 +98,12 @@ export default async function EventDetailsPage({
   const event = await res.json();
 
   const title = event.title?.trim() ?? "Event";
-  const description = event.shortDescription?.trim() ?? "";
+  const imageUrl = typeof event.imageUrl === "string" ? event.imageUrl.trim() : "";
+  const rawDescription = event.shortDescription?.trim() ?? "";
+  const isMetaDescription = rawDescription.length > 0 && rawDescription.length <= 60;
+
+  const metaDescription = isMetaDescription ? rawDescription : "";
+  const bodyDescription = isMetaDescription ? "" : rawDescription;
   const dateTime = new Date(event.startDateTime).toLocaleString(
     locale === "nl" ? "nl-NL" : "en-GB",
     {
@@ -112,7 +119,7 @@ export default async function EventDetailsPage({
     "@context": "https://schema.org",
     "@type": "Event",
     name: title,
-    description: description || undefined,
+    description: bodyDescription || undefined,
     startDate: event.startDateTime,
     url: `${baseUrl}/${locale}/events/${event.id}`,
     eventStatus: "https://schema.org/EventScheduled",
@@ -142,24 +149,48 @@ export default async function EventDetailsPage({
         dangerouslySetInnerHTML={{ __html: toJsonLdScript(jsonLd) }}
       />
 
-      <Link href={`/${locale}/events`} className="text-sm underline">
-        ← {t.event.backToEvents}
+      <Link
+        href={`/${locale}/events`}
+        className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white"
+      >
+        <span aria-hidden="true">←</span>
+        <span>{t.event.backToEvents}</span>
       </Link>
 
       <header className="mt-6">
         <h1 className="text-3xl font-semibold">{title}</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-white/70">
           {event.city} • {dateTime}
         </p>
+
+        {metaDescription ? <p className="mt-1 text-sm text-white/60">{metaDescription}</p> : null}
       </header>
 
-      {description ? (
-        <p className="mt-6 whitespace-pre-line text-base text-gray-800">{description}</p>
+      {imageUrl ? (
+        <div className="mt-6 overflow-hidden rounded-2xl border bg-gray-50 shadow-sm">
+          <div className="relative aspect-[16/9] w-full">
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+              priority={false}
+            />
+          </div>
+        </div>
       ) : null}
 
-      <section className="mt-8 rounded-xl border p-4">
-        <h2 className="text-lg font-semibold">{t.event.locationTitle}</h2>
-        <div className="mt-2 text-sm text-gray-700">
+      {bodyDescription ? (
+        <p className="mt-6 whitespace-pre-line text-base text-white/80">{bodyDescription}</p>
+      ) : null}
+
+      <section className="mt-8 rounded-xl border border-white/10 bg-white/5 p-4">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <MapPin className="h-5 w-5 text-white/70" aria-hidden="true" />
+          {t.event.locationTitle}
+        </h2>
+        <div className="mt-2 text-sm text-white/70">
           <div>{event.venueName}</div>
           <div>{event.city}</div>
         </div>
@@ -169,7 +200,7 @@ export default async function EventDetailsPage({
             href={event.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            className="mt-4 inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
           >
             {t.event.bookTickets}
           </a>
@@ -178,7 +209,7 @@ export default async function EventDetailsPage({
           href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+          className="mt-3 ml-2 inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
         >
           {t.event.openInMaps} →
         </a>
@@ -193,15 +224,21 @@ export default async function EventDetailsPage({
         </div>
       </section>
 
-      <section className="mt-6 rounded-xl border p-4">
-        <h2 className="text-lg font-semibold">{t.event.calendarTitle}</h2>
+      <section className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Calendar className="h-5 w-5 text-white/70" aria-hidden="true" />
+          {t.event.calendarTitle}
+        </h2>
+
         <a
           href={`/api/calendar?id=${event.id}`}
           aria-label={`${t.event.calendarTitle}: ${t.event.downloadIcs}`}
-          className="mt-3 inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+          className="mt-3 inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
         >
           {t.event.downloadIcs}
         </a>
+
+        <p className="mt-2 text-sm text-white/60">{t.event.calendarHint}</p>
       </section>
     </main>
   );

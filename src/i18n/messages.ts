@@ -74,6 +74,8 @@ export const messages = {
       notFoundBody:
         "This event link may be outdated or the event was removed. Please go back to the events list.",
       openInMaps: "Open in Google Maps",
+      calendarHint:
+        "Click to download an .ics file — open the downloaded file to add the event to your calendar.",
     },
     eventsList: {
       loadingFavorites: "Loading favorites…",
@@ -166,6 +168,8 @@ export const messages = {
       notFoundBody:
         "Deze link is mogelijk verouderd of het evenement is verwijderd. Ga terug naar de evenementenlijst.",
       openInMaps: "Openen in Google Maps",
+      calendarHint:
+        "Klik om een .ics-bestand te downloaden — open het gedownloade bestand om het evenement aan je agenda toe te voegen.",
     },
     eventsList: {
       loadingFavorites: "Favorieten laden…",
