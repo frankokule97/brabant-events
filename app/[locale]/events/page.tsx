@@ -29,6 +29,7 @@ export default async function EventsPage({
   const when: WhenFilter | "" =
     rawWhen && WHEN_FILTERS.includes(rawWhen as WhenFilter) ? (rawWhen as WhenFilter) : "";
   const favoritesOnly = sp?.fav === "1";
+  const hasClientFilters = Boolean(sp?.q?.trim()) || Boolean(sp?.cat?.trim());
   const rawP = sp?.p;
   const pageNumber = rawP ? Number.parseInt(rawP, 10) : 1;
   const safePageNumber = Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1;
@@ -42,9 +43,15 @@ export default async function EventsPage({
     if (sp?.q) params.set("q", sp.q);
     if (sp?.cat) params.set("cat", sp.cat);
 
-    // 1-based page param
     if (targetPage > 1) params.set("p", String(targetPage));
 
+    const qs = params.toString();
+    return qs ? withLocale(`/events?${qs}`) : withLocale("/events");
+  }
+
+  function buildResetFiltersHref(): string {
+    const params = new URLSearchParams();
+    if (when) params.set("when", when);
     const qs = params.toString();
     return qs ? withLocale(`/events?${qs}`) : withLocale("/events");
   }
@@ -167,7 +174,6 @@ export default async function EventsPage({
     return result;
   }
 
-  const hasClientFilters = Boolean(sp?.q?.trim()) || Boolean(sp?.cat?.trim());
   const isEmptyForDateFilter = !favoritesOnly && !hasClientFilters && events.length === 0;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://brabant-events.vercel.app";
 
@@ -222,7 +228,17 @@ export default async function EventsPage({
       ) : (
         <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} labels={t.filters} />
       )}
-      {page.totalPages > 1 ? (
+      {!favoritesOnly && hasClientFilters ? (
+        <div className="mt-8 flex justify-center">
+          <Link
+            href={buildResetFiltersHref()}
+            className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
+          >
+            {t.events.resetFilters}
+          </Link>
+        </div>
+      ) : null}
+      {!favoritesOnly && !hasClientFilters && page.totalPages > 1 ? (
         <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
           <Link
             href={buildPageHref(Math.max(1, currentPage - 1))}

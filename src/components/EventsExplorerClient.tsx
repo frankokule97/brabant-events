@@ -14,14 +14,35 @@ type Props = {
 type Labels = {
   searchLabel: string;
   searchPlaceholder: string;
-  searchHelpNoResults: string;
   categoryLabel: string;
   allCategories: string;
   clearFilters: string;
+  noResultsGeneric: string;
+  noResultsWithFilters: string;
 };
 
 function normalize(s: string): string {
   return s.trim().toLowerCase();
+}
+
+function translateCategoryLabel(category: string, locale: "en" | "nl"): string {
+  const raw = category.trim();
+  if (!raw) return raw;
+
+  const nlMap: Record<string, string> = {
+    Music: "Muziek",
+    Sports: "Sport",
+    "Arts & Theatre": "Kunst & Theater",
+    Film: "Film",
+    Miscellaneous: "Overig",
+    Undefined: "Overig",
+  };
+
+  if (locale === "nl") {
+    return nlMap[raw] ?? raw;
+  }
+
+  return raw;
 }
 
 function eventSearchHaystack(e: AppEventPreview): string {
@@ -80,6 +101,13 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
     return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
   }, [eventIndex, deferredSearchQuery]);
 
+  const categoryOptions = useMemo(() => {
+    if (!selectedCategory) return availableCategories;
+    return availableCategories.includes(selectedCategory)
+      ? availableCategories
+      : [selectedCategory, ...availableCategories];
+  }, [availableCategories, selectedCategory]);
+
   const filteredEvents = useMemo(() => {
     const searchText = normalize(deferredSearchQuery);
     const categoryText = normalize(selectedCategory);
@@ -95,13 +123,17 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
 
   const replaceSearchParams = useCallback(
     (mutator: (next: URLSearchParams) => void) => {
-      const next = new URLSearchParams(sp.toString());
-      mutator(next);
+      const current =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search)
+          : new URLSearchParams(sp.toString());
 
-      const qs = next.toString();
+      mutator(current);
+
+      const qs = current.toString();
       router.replace(qs ? `/${locale}/events?${qs}` : `/${locale}/events`);
     },
-    [router, sp, locale],
+    [router, locale, sp],
   );
 
   const updateUrlParam = useCallback(
@@ -111,33 +143,25 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
         if (v) next.set(key, v);
         else next.delete(key);
 
-        next.delete("p"); // resetting pagination when filters change
+        next.delete("p");
       });
     },
     [replaceSearchParams],
   );
 
-  useEffect(() => {
-    if (!selectedCategory) return;
-    const normalizedSelected = normalize(selectedCategory);
-
-    const stillValid = availableCategories.some((c) => normalize(c) === normalizedSelected);
-    if (!stillValid) {
-      replaceSearchParams((next) => {
-        next.delete("cat");
-        next.delete("p");
-      });
-    }
-  }, [selectedCategory, availableCategories, replaceSearchParams]);
-
-  const clearFilters = useCallback(() => {
+  const clearSearch = useCallback(() => {
     setSearchQuery("");
     replaceSearchParams((next) => {
       next.delete("q");
-      next.delete("cat");
       next.delete("p");
     });
-  }, [replaceSearchParams, setSearchQuery]);
+  }, [replaceSearchParams]);
+
+  const hasSearch = searchQuery.trim().length > 0;
+  const hasSearchParam = urlSearchQuery.trim().length > 0;
+  const hasCategory = selectedCategory.trim().length > 0;
+  const searchText = searchQuery.trim();
+  const showNoResultsHint = searchText.length >= 3 && filteredEvents.length === 0;
 
   return (
     <div className="space-y-4">
@@ -161,8 +185,12 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
               placeholder={labels.searchPlaceholder}
               className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
             />
-            {searchQuery.trim() && filteredEvents.length === 0 ? (
-              <p className="mt-2 text-sm text-red-500">{labels.searchHelpNoResults}</p>
+            {showNoResultsHint ? (
+              <p className="mt-2 text-sm text-red-500">
+                {hasCategory
+                  ? labels.noResultsWithFilters
+                  : labels.noResultsGeneric.replace("{{query}}", searchText)}
+              </p>
             ) : null}
           </div>
 
@@ -176,24 +204,26 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
               className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
             >
               <option value="">{labels.allCategories}</option>
-              {availableCategories.map((c) => (
+              {categoryOptions.map((c) => (
                 <option key={c} value={c}>
-                  {c}
+                  {translateCategoryLabel(c, locale)}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {(searchQuery.trim() || selectedCategory.trim()) && (
-          <div className="mt-3">
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
-            >
-              {labels.clearFilters}
-            </button>
+        {(hasSearch || hasCategory) && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {hasSearchParam ? (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+              >
+                {labels.clearFilters}
+              </button>
+            ) : null}
           </div>
         )}
       </div>
