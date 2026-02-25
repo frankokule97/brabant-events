@@ -49,7 +49,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
   if (favoritesOnly && favoriteIds === null) {
     return (
-      <div className="rounded-xl border p-6 text-sm text-gray-700">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
         {t.eventsList.loadingFavorites}
       </div>
     );
@@ -58,14 +58,14 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
   // 1. Case --> if user opens favorites, but has no favorites selected yet
   if (favoritesOnly && favoriteIds && favoriteIds.size === 0) {
     return (
-      <div className="rounded-xl border p-6 text-sm text-gray-700">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
         <div className="text-base font-semibold text-gray-900">{t.eventsList.noFavoritesTitle}</div>
         <p className="mt-2">{t.eventsList.noFavoritesBody}</p>
 
         <div className="mt-4">
           <Link
             href={withLocale("/events")}
-            className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
           >
             {t.eventsList.showAllEvents}
           </Link>
@@ -77,8 +77,8 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
   // 2. Case --> if user has selected favorites, but they don't match the "when" filter
   if (visibleEvents.length === 0) {
     return (
-      <div className="rounded-xl border p-6 text-sm text-gray-700">
-        <div className="text-base font-semibold text-gray-900">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+        <div className="text-base font-semibold text-white/90">
           {t.eventsList.nothingToShowTitle}
         </div>
         <p className="mt-2">
@@ -88,19 +88,10 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             href={withLocale("/events")}
-            className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
           >
             {t.eventsList.resetFilters}
           </Link>
-
-          {favoritesOnly ? (
-            <Link
-              href={withLocale("/events?fav=1")}
-              className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
-            >
-              {t.eventsList.showAllFavorites}
-            </Link>
-          ) : null}
         </div>
       </div>
     );
@@ -109,8 +100,11 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
   return (
     <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {visibleEvents.map((event) => (
-        <article key={event.id} className="rounded-xl border p-4 shadow-sm">
-          <div className="text-xs text-gray-600">
+        <article
+          key={event.id}
+          className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-sm transition-colors hover:bg-white/10"
+        >
+          <div className="text-xs text-white/60">
             {[event.city, event.venueName].filter(Boolean).join(" • ")}{" "}
             {event.startDateTime
               ? `• ${new Date(event.startDateTime).toLocaleString(dateLocale, { dateStyle: "medium", timeStyle: "short" })}`
@@ -120,7 +114,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
           <div className="mt-2 flex items-start justify-between gap-3">
             <Link
               href={withLocale(`/events/${event.id}`)}
-              className="hover:underline"
+              className="text-base font-semibold text-white/90 hover:underline"
               title={t.eventsList.viewDetailsTitle}
             >
               {event.title}
@@ -131,8 +125,9 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
 
               <a
                 href={`/api/calendar?id=${event.id}`}
-                className="rounded-full border px-3 py-1 text-sm hover:bg-gray-100"
+                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/90 hover:bg-white/10"
                 title={t.eventsList.addToCalendarTitle}
+                aria-label={t.eventsList.addToCalendarTitle}
               >
                 📅
               </a>
@@ -140,7 +135,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
           </div>
 
           {event.shortDescription ? (
-            <p className="mt-2 line-clamp-3 text-sm text-gray-700">{event.shortDescription}</p>
+            <p className="mt-2 line-clamp-3 text-sm text-white/60">{event.shortDescription}</p>
           ) : null}
         </article>
       ))}

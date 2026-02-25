@@ -4,6 +4,7 @@ import { useMemo, useEffect, useCallback, useDeferredValue, useState, useRef } f
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import type { AppEventPreview } from "@/types/appEvents";
 import { EventsListClient } from "@/components/EventsListClient";
+import { ChevronDown, Info } from "lucide-react";
 
 type Props = {
   events: AppEventPreview[];
@@ -165,10 +166,10 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border p-4">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-900">{labels.searchLabel}</label>
+            <label className="block text-sm font-medium text-white/80">{labels.searchLabel}</label>
             <input
               ref={inputRef}
               value={searchQuery}
@@ -183,33 +184,43 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
                 }, 200);
               }}
               placeholder={labels.searchPlaceholder}
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90 placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20"
             />
             {showNoResultsHint ? (
-              <p className="mt-2 text-sm text-red-500">
-                {hasCategory
-                  ? labels.noResultsWithFilters
-                  : labels.noResultsGeneric.replace("{{query}}", searchText)}
+              <p className="mt-2 flex items-start gap-2 text-sm font-medium text-white/80">
+                <Info className="mt-0.5 h-4 w-4 text-white/60" aria-hidden="true" />
+                <span>
+                  {hasCategory
+                    ? labels.noResultsWithFilters
+                    : labels.noResultsGeneric.replace("{{query}}", searchText)}
+                </span>
               </p>
             ) : null}
           </div>
 
           <div className="sm:w-64">
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-white/80">
               {labels.categoryLabel}
             </label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => updateUrlParam("cat", e.target.value)}
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
-            >
-              <option value="">{labels.allCategories}</option>
-              {categoryOptions.map((c) => (
-                <option key={c} value={c}>
-                  {translateCategoryLabel(c, locale)}
-                </option>
-              ))}
-            </select>
+            <div className="relative mt-1">
+              <select
+                value={selectedCategory}
+                onChange={(e) => updateUrlParam("cat", e.target.value)}
+                className="w-full appearance-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 pr-10 text-sm text-white/90 focus:outline-none focus:ring-2 focus:ring-white/20"
+              >
+                <option value="">{labels.allCategories}</option>
+                {categoryOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {translateCategoryLabel(c, locale)}
+                  </option>
+                ))}
+              </select>
+
+              <ChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
 
@@ -219,7 +230,7 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
               <button
                 type="button"
                 onClick={clearSearch}
-                className="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-100"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white/90 hover:bg-white/10"
               >
                 {labels.clearFilters}
               </button>

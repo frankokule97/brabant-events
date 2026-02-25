@@ -200,7 +200,7 @@ export default async function EventsPage({
       ) : null}
       <header className="mb-6">
         <h1 className="text-3xl font-semibold">{t.events.title}</h1>
-        <p className="mt-2 text-sm text-gray-600">{t.events.subtitle}</p>
+        <p className="mt-2 text-sm text-white/70">{t.events.subtitle}</p>
 
         <nav className="mt-4 flex flex-wrap gap-2">
           <FilterButton href={withLocale("/events")} active={!when}>
@@ -244,8 +244,8 @@ export default async function EventsPage({
             href={buildPageHref(Math.max(1, currentPage - 1))}
             aria-disabled={currentPage === 1}
             className={[
-              "rounded-lg border px-3 py-2 text-sm",
-              currentPage === 1 ? "pointer-events-none opacity-50" : "hover:bg-gray-100",
+              "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
+              currentPage === 1 ? "pointer-events-none opacity-50" : "hover:bg-white/10",
             ].join(" ")}
           >
             {t.events.prev}
@@ -253,7 +253,7 @@ export default async function EventsPage({
 
           {getVisiblePages().map((item, idx) =>
             item === "ellipsis" ? (
-              <span key={`e-${idx}`} className="px-2 text-sm text-gray-500">
+              <span key={`e-${idx}`} className="px-2 text-sm text-white/50">
                 …
               </span>
             ) : (
@@ -261,8 +261,8 @@ export default async function EventsPage({
                 key={item}
                 href={buildPageHref(item)}
                 className={[
-                  "rounded-lg border px-3 py-2 text-sm",
-                  item === currentPage ? "bg-gray-900 text-white" : "hover:bg-gray-100",
+                  "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
+                  item === currentPage ? "bg-white/15" : "hover:bg-white/10",
                 ].join(" ")}
               >
                 {item}
@@ -274,8 +274,8 @@ export default async function EventsPage({
             href={buildPageHref(Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage === totalPages}
             className={[
-              "rounded-lg border px-3 py-2 text-sm",
-              currentPage === totalPages ? "pointer-events-none opacity-50" : "hover:bg-gray-100",
+              "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
+              currentPage === totalPages ? "pointer-events-none opacity-50" : "hover:bg-white/10",
             ].join(" ")}
           >
             {t.events.next}
@@ -299,8 +299,10 @@ function FilterButton({
     <Link
       href={href}
       className={[
-        "rounded-full border px-3 py-1 text-sm",
-        active ? "bg-gray-900 text-white" : "bg-white text-gray-900",
+        "rounded-full border px-3 py-1 text-sm transition-colors",
+        active
+          ? "border-white/10 bg-white/15 text-white"
+          : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white",
       ].join(" ")}
     >
       {children}
