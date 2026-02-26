@@ -228,7 +228,7 @@ export default async function EventsPage({
       ) : (
         <EventsExplorerClient events={events} favoritesOnly={favoritesOnly} labels={t.filters} />
       )}
-      {!favoritesOnly && hasClientFilters ? (
+      {!favoritesOnly && hasClientFilters && events.length > 0 ? (
         <div className="mt-8 flex justify-center">
           <Link
             href={buildResetFiltersHref()}

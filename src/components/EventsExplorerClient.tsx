@@ -159,7 +159,6 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
   }, [replaceSearchParams]);
 
   const hasSearch = searchQuery.trim().length > 0;
-  const hasSearchParam = urlSearchQuery.trim().length > 0;
   const hasCategory = selectedCategory.trim().length > 0;
   const searchText = searchQuery.trim();
   const showNoResultsHint = searchText.length >= 3 && filteredEvents.length === 0;
@@ -226,7 +225,7 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
 
         {(hasSearch || hasCategory) && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {hasSearchParam ? (
+            {hasSearch ? (
               <button
                 type="button"
                 onClick={clearSearch}
