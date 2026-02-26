@@ -329,16 +329,17 @@ function EmptyStateServer({
           : "";
 
   return (
-    <section className="rounded-xl border p-6">
-      <h2 className="text-lg font-semibold">{t.events.emptyTitle}</h2>
-      <p className="mt-2 text-sm text-gray-600">
+    <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-white/95">{t.events.emptyTitle}</h2>
+
+      <p className="mt-2 text-sm text-white/70">
         {label ? t.events.emptyNoneFor.replace("{{label}}", label) : t.events.emptyNoneNow}
       </p>
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
           href={`/${locale}/events`}
-          className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+          className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
         >
           {t.events.resetFilters}
         </Link>
