@@ -54,6 +54,9 @@ export function LocaleSwitcher() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const itemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -73,8 +76,72 @@ export function LocaleSwitcher() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const activeIndex = items.findIndex((i) => i.locale === currentLocale);
+    const indexToFocus = activeIndex >= 0 ? activeIndex : 0;
+
+    requestAnimationFrame(() => {
+      itemRefs.current[indexToFocus]?.focus();
+    });
+  }, [open, items, currentLocale]);
+
   const currentLabel = label(currentLocale);
   const currentFlag = flag(currentLocale);
+
+  function onMenuKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const keys = ["ArrowDown", "ArrowUp", "Home", "End", "Escape", "Enter", " "];
+    if (!keys.includes(e.key)) return;
+
+    const links = itemRefs.current.filter(Boolean) as HTMLAnchorElement[];
+    if (links.length === 0) return;
+
+    const currentIndex = links.findIndex((el) => el === document.activeElement);
+
+    const focusAt = (idx: number) => {
+      const next = links[idx];
+      next?.focus();
+    };
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      buttonRef.current?.focus();
+      return;
+    }
+
+    if (e.key === "Home") {
+      e.preventDefault();
+      focusAt(0);
+      return;
+    }
+
+    if (e.key === "End") {
+      e.preventDefault();
+      focusAt(links.length - 1);
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = currentIndex >= 0 ? (currentIndex + 1) % links.length : 0;
+      focusAt(next);
+      return;
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const next = currentIndex >= 0 ? (currentIndex - 1 + links.length) % links.length : 0;
+      focusAt(next);
+      return;
+    }
+
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      (document.activeElement as HTMLElement | null)?.click();
+    }
+  }
 
   return (
     <div ref={rootRef} className="relative">
@@ -83,11 +150,12 @@ export function LocaleSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
+        ref={buttonRef}
         className={[
-          "relative inline-flex items-center gap-2 overflow-hidden rounded-md border px-3 py-1.5 text-sm shadow-sm",
+          "relative inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm shadow-sm",
           "border-white/15 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white",
           "hover:bg-white/5",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
         ].join(" ")}
       >
         <span
@@ -120,6 +188,7 @@ export function LocaleSwitcher() {
         <div
           role="menu"
           aria-label="Select language"
+          onKeyDown={onMenuKeyDown}
           className={[
             "absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-md border shadow-lg",
             "border-white/15 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800",
@@ -128,18 +197,24 @@ export function LocaleSwitcher() {
           <div className="absolute inset-0 opacity-40 [background:radial-gradient(900px_circle_at_20%_20%,rgba(255,255,255,0.18),transparent_55%),radial-gradient(700px_circle_at_80%_0%,rgba(255,255,255,0.12),transparent_50%)]" />
 
           <div className="relative">
-            {items.map(({ locale, href }) => {
+            {items.map(({ locale, href }, index) => {
               const active = locale === currentLocale;
 
               return (
                 <Link
                   key={locale}
                   href={href}
+                  ref={(el) => {
+                    itemRefs.current[index] = el;
+                  }}
                   role="menuitem"
                   onClick={() => setOpen(false)}
                   className={[
-                    "flex items-center gap-2 px-3 py-2 text-sm transition",
+                    "relative flex items-center gap-2 px-3 py-2 text-sm transition",
                     "border-b border-white/10 last:border-b-0",
+                    "rounded-sm",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500",
+                    "focus-visible:bg-white/20",
                     active ? "bg-white/10 text-white" : "text-white/85 hover:bg-white/5",
                   ].join(" ")}
                 >

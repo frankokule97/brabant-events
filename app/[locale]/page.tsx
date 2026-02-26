@@ -59,14 +59,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
                 href={`/${locale}/events`}
-                className="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+                className="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 {t.home.ctaAll}
               </Link>
 
               <Link
                 href={`/${locale}/events?when=weekend`}
-                className="inline-flex items-center rounded-md border border-white/30 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
+                className="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 {t.home.ctaWeekend}
               </Link>
