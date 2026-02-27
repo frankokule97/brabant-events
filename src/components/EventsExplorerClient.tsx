@@ -20,6 +20,7 @@ type Labels = {
   clearFilters: string;
   noResultsGeneric: string;
   noResultsWithFilters: string;
+  accessibilityTip: string;
 };
 
 function normalize(s: string): string {
@@ -168,8 +169,11 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-white/80">{labels.searchLabel}</label>
+            <label htmlFor="events-search" className="block text-sm font-medium text-white/80">
+              {labels.searchLabel}
+            </label>
             <input
+              id="events-search"
               ref={inputRef}
               value={searchQuery}
               onChange={(e) => {
@@ -183,7 +187,7 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
                 }, 200);
               }}
               placeholder={labels.searchPlaceholder}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90 placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20"
+              className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90 placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
             />
             {showNoResultsHint ? (
               <p className="mt-2 flex items-start gap-2 text-sm font-medium text-white/80">
@@ -198,27 +202,39 @@ export function EventsExplorerClient({ events, favoritesOnly, labels }: Props) {
           </div>
 
           <div className="sm:w-64">
-            <label className="block text-sm font-medium text-white/80">
-              {labels.categoryLabel}
-            </label>
-            <div className="relative mt-1">
-              <select
-                value={selectedCategory}
-                onChange={(e) => updateUrlParam("cat", e.target.value)}
-                className="w-full appearance-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 pr-10 text-sm text-white/90 focus:outline-none focus:ring-2 focus:ring-white/20"
-              >
-                <option value="">{labels.allCategories}</option>
-                {categoryOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {translateCategoryLabel(c, locale)}
-                  </option>
-                ))}
-              </select>
+            <div className="group">
+              <label htmlFor="events-category" className="block text-sm font-medium text-white/80">
+                {labels.categoryLabel}
+              </label>
 
-              <ChevronDown
-                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60"
-                aria-hidden="true"
-              />
+              <div className="relative mt-1">
+                <select
+                  id="events-category"
+                  aria-describedby="events-category-hint"
+                  value={selectedCategory}
+                  onChange={(e) => updateUrlParam("cat", e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 pr-10 text-sm text-white/90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  <option value="">{labels.allCategories}</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c} value={c}>
+                      {translateCategoryLabel(c, locale)}
+                    </option>
+                  ))}
+                </select>
+
+                <ChevronDown
+                  className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60"
+                  aria-hidden="true"
+                />
+              </div>
+
+              <p
+                id="events-category-hint"
+                className="mt-2 hidden text-xs text-white/50 group-focus-within:block"
+              >
+                {labels.accessibilityTip}
+              </p>
             </div>
           </div>
         </div>

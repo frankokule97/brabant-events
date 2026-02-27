@@ -243,6 +243,7 @@ export default async function EventsPage({
           <Link
             href={buildPageHref(Math.max(1, currentPage - 1))}
             aria-disabled={currentPage === 1}
+            tabIndex={currentPage === 1 ? -1 : undefined}
             className={[
               "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
               currentPage === 1 ? "pointer-events-none opacity-50" : "hover:bg-white/10",
@@ -260,6 +261,7 @@ export default async function EventsPage({
               <Link
                 key={item}
                 href={buildPageHref(item)}
+                aria-current={item === currentPage ? "page" : undefined}
                 className={[
                   "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
                   item === currentPage ? "bg-white/15" : "hover:bg-white/10",
@@ -273,6 +275,7 @@ export default async function EventsPage({
           <Link
             href={buildPageHref(Math.min(totalPages, currentPage + 1))}
             aria-disabled={currentPage === totalPages}
+            tabIndex={currentPage === totalPages ? -1 : undefined}
             className={[
               "rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90",
               currentPage === totalPages ? "pointer-events-none opacity-50" : "hover:bg-white/10",

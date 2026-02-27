@@ -13,6 +13,7 @@ export const messages = {
       noResultsGeneric: 'No results for "{{query}}". Try another city, venue, or event name.',
       noResultsWithFilters:
         "No results match your current filters. Try clearing the category or resetting filters.",
+      accessibilityTip: "Tip: press Space or Arrow Down to open",
     },
     home: {
       heroTitle: "Discover events in Noord-Brabant",
@@ -116,6 +117,7 @@ export const messages = {
         'Geen resultaten voor "{{query}}". Probeer een andere plaats, locatie of evenementnaam.',
       noResultsWithFilters:
         "Geen resultaten voor de huidige filters. Wis de categorie of reset de filters.",
+      accessibilityTip: "Tip: druk op Spatie of Pijl omlaag om te openen",
     },
     home: {
       heroTitle: "Ontdek events in Noord-Brabant",

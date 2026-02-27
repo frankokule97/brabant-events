@@ -59,7 +59,7 @@ export function EventsListClient({ events, favoritesOnly }: Props) {
   if (favoritesOnly && favoriteIds && favoriteIds.size === 0) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
-        <div className="text-base font-semibold text-gray-900">{t.eventsList.noFavoritesTitle}</div>
+        <div className="text-base font-semibold text-white/90">{t.eventsList.noFavoritesTitle}</div>
         <p className="mt-2">{t.eventsList.noFavoritesBody}</p>
 
         <div className="mt-4">
