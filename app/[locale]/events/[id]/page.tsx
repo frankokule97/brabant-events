@@ -196,24 +196,27 @@ export default async function EventDetailsPage({
           <div>{event.city}</div>
         </div>
 
-        {event.bookingUrl ? (
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          {event.bookingUrl ? (
+            <a
+              href={event.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex justify-center rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
+            >
+              {t.event.bookTickets}
+            </a>
+          ) : null}
+
           <a
-            href={event.bookingUrl}
+            href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
+            className="inline-flex justify-center rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
           >
-            {t.event.bookTickets}
+            {t.event.openInMaps} →
           </a>
-        ) : null}
-        <a
-          href={mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 ml-2 inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10"
-        >
-          {t.event.openInMaps} →
-        </a>
+        </div>
         <div className="mt-4 overflow-hidden rounded-lg border">
           <iframe
             title={`${t.event.locationTitle}: ${mapsQuery}`}
