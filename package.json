@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "playwright test"
+    "test:e2e": "test"
   },
   "dependencies": {
     "lucide-react": "^0.575.0",

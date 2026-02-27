@@ -1,0 +1,286 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "BrabantEvents" [ref=e4] [cursor=pointer]:
+        - /url: /en
+      - generic [ref=e5]:
+        - navigation [ref=e6]:
+          - link "Home" [ref=e7] [cursor=pointer]:
+            - /url: /en
+          - link "Events" [ref=e8] [cursor=pointer]:
+            - /url: /en/events
+        - button "English" [ref=e10]:
+          - generic [ref=e11]:
+            - generic [ref=e12]: 🇬🇧
+            - generic [ref=e13]: English
+            - img [ref=e14]
+  - main [ref=e16]:
+    - main [ref=e17]:
+      - generic [ref=e18]:
+        - heading "Events" [level=1] [ref=e19]
+        - paragraph [ref=e20]: Discover events in North Brabant.
+        - navigation [ref=e21]:
+          - link "All" [ref=e22] [cursor=pointer]:
+            - /url: /en/events
+          - link "Today" [ref=e23] [cursor=pointer]:
+            - /url: /en/events?when=today
+          - link "This weekend" [ref=e24] [cursor=pointer]:
+            - /url: /en/events?when=weekend
+          - link "This month" [ref=e25] [cursor=pointer]:
+            - /url: /en/events?when=month
+          - link "Favorites" [ref=e26] [cursor=pointer]:
+            - /url: /en/events?fav=1
+      - generic [ref=e27]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]: Search
+            - textbox "Search" [ref=e32]:
+              - /placeholder: Search by title, city, venue...
+          - generic [ref=e34]:
+            - generic [ref=e35]: Category
+            - generic [ref=e36]:
+              - combobox "Category" [ref=e37]:
+                - option "All categories" [selected]
+                - option "Arts & Theatre"
+                - option "Miscellaneous"
+                - option "Music"
+                - option "Sports"
+              - img
+        - generic [ref=e38]:
+          - article [ref=e39]:
+            - generic [ref=e40]: Tilburg • 013 Poppodium • 13 Mar 2026, 18:00
+            - generic [ref=e41]:
+              - link "Poppy + Ocean Grove + Fox Lake" [ref=e42] [cursor=pointer]:
+                - /url: /en/events/LvZ18Q2Tq6S_pMOZ0EhFS
+              - generic [ref=e43]:
+                - button "Add to favorites" [ref=e44]: ☆
+                - link "Add to calendar" [ref=e45] [cursor=pointer]:
+                  - /url: /api/calendar?id=LvZ18Q2Tq6S_pMOZ0EhFS
+                  - text: 📅
+            - paragraph [ref=e46]: Metal • 013 Poppodium
+          - article [ref=e47]:
+            - generic [ref=e48]: Eindhoven • Effenaar • 14 Mar 2026, 18:00
+            - generic [ref=e49]:
+              - link "Carpenter Brut + Master Boot Record + Danger" [ref=e50] [cursor=pointer]:
+                - /url: /en/events/LvZ18Q2T-2rvRyOZl5GFO
+              - generic [ref=e51]:
+                - button "Add to favorites" [ref=e52]: ☆
+                - link "Add to calendar" [ref=e53] [cursor=pointer]:
+                  - /url: /api/calendar?id=LvZ18Q2T-2rvRyOZl5GFO
+                  - text: 📅
+            - paragraph [ref=e54]: Rock • Effenaar
+          - article [ref=e55]:
+            - generic [ref=e56]: Eindhoven • Dynamo • 15 Mar 2026, 12:30
+            - generic [ref=e57]:
+              - link "Eindhoven Game Festival - Visitor" [ref=e58] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kPtag8s
+              - generic [ref=e59]:
+                - button "Add to favorites" [ref=e60]: ☆
+                - link "Add to calendar" [ref=e61] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kPtag8s
+                  - text: 📅
+            - paragraph [ref=e62]: Miscellaneous • Dynamo
+          - article [ref=e63]:
+            - generic [ref=e64]: Breda • Van der Valk Hotel Breda • 15 Mar 2026, 13:30
+            - generic [ref=e65]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e66] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kAtpZjt
+              - generic [ref=e67]:
+                - button "Add to favorites" [ref=e68]: ☆
+                - link "Add to calendar" [ref=e69] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kAtpZjt
+                  - text: 📅
+            - paragraph [ref=e70]: Family • Van der Valk Hotel Breda
+          - article [ref=e71]:
+            - generic [ref=e72]: Breda • Van der Valk Hotel Breda • 15 Mar 2026, 19:30
+            - generic [ref=e73]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e74] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16v33qx1Z
+              - generic [ref=e75]:
+                - button "Add to favorites" [ref=e76]: ☆
+                - link "Add to calendar" [ref=e77] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16v33qx1Z
+                  - text: 📅
+            - paragraph [ref=e78]: Family • Van der Valk Hotel Breda
+          - article [ref=e79]:
+            - generic [ref=e80]: Gorinchem • Hotel Gorinchem • 20 Mar 2026, 13:30
+            - generic [ref=e81]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e82] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16vp_pa-b
+              - generic [ref=e83]:
+                - button "Add to favorites" [ref=e84]: ☆
+                - link "Add to calendar" [ref=e85] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16vp_pa-b
+                  - text: 📅
+            - paragraph [ref=e86]: Family • Hotel Gorinchem
+          - article [ref=e87]:
+            - generic [ref=e88]: Gorinchem • Hotel Gorinchem • 20 Mar 2026, 19:30
+            - generic [ref=e89]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e90] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kCaFzPN
+              - generic [ref=e91]:
+                - button "Add to favorites" [ref=e92]: ☆
+                - link "Add to calendar" [ref=e93] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kCaFzPN
+                  - text: 📅
+            - paragraph [ref=e94]: Family • Hotel Gorinchem
+          - article [ref=e95]:
+            - generic [ref=e96]: Tilburg • Biergarten Albatros • 20 Mar 2026, 20:30
+            - generic [ref=e97]:
+              - link "Comedy Club Schimmel" [ref=e98] [cursor=pointer]:
+                - /url: /en/events/LvZ18Q40ge5dflOZy0atx
+              - generic [ref=e99]:
+                - button "Add to favorites" [ref=e100]: ☆
+                - link "Add to calendar" [ref=e101] [cursor=pointer]:
+                  - /url: /api/calendar?id=LvZ18Q40ge5dflOZy0atx
+                  - text: 📅
+            - paragraph [ref=e102]: Comedy • Biergarten Albatros
+          - article [ref=e103]:
+            - generic [ref=e104]: Oisterwijk • Fletcher Hotel Boschoord • 23 Mar 2026, 19:30
+            - generic [ref=e105]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e106] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16vFt-bbd
+              - generic [ref=e107]:
+                - button "Add to favorites" [ref=e108]: ☆
+                - link "Add to calendar" [ref=e109] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16vFt-bbd
+                  - text: 📅
+            - paragraph [ref=e110]: Family • Fletcher Hotel Boschoord
+          - article [ref=e111]:
+            - generic [ref=e112]: Nuland • Van der Valk Nuland • 29 Mar 2026, 13:30
+            - generic [ref=e113]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e114] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16vuKukqs
+              - generic [ref=e115]:
+                - button "Add to favorites" [ref=e116]: ☆
+                - link "Add to calendar" [ref=e117] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16vuKukqs
+                  - text: 📅
+            - paragraph [ref=e118]: Family • Van der Valk Nuland
+          - article [ref=e119]:
+            - generic [ref=e120]: Nuland • Van der Valk Nuland • 29 Mar 2026, 19:30
+            - generic [ref=e121]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e122] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1k_O06uO
+              - generic [ref=e123]:
+                - button "Add to favorites" [ref=e124]: ☆
+                - link "Add to calendar" [ref=e125] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1k_O06uO
+                  - text: 📅
+            - paragraph [ref=e126]: Family • Van der Valk Nuland
+          - article [ref=e127]:
+            - generic [ref=e128]: Eindhoven • Holiday Inn Eindhoven • 3 Apr 2026, 13:30
+            - generic [ref=e129]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e130] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kC_ak_V
+              - generic [ref=e131]:
+                - button "Add to favorites" [ref=e132]: ☆
+                - link "Add to calendar" [ref=e133] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kC_ak_V
+                  - text: 📅
+            - paragraph [ref=e134]: Family • Holiday Inn Eindhoven
+          - article [ref=e135]:
+            - generic [ref=e136]: Eindhoven • Holiday Inn Eindhoven • 3 Apr 2026, 19:30
+            - generic [ref=e137]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e138] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16v_YukfI
+              - generic [ref=e139]:
+                - button "Add to favorites" [ref=e140]: ☆
+                - link "Add to calendar" [ref=e141] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16v_YukfI
+                  - text: 📅
+            - paragraph [ref=e142]: Family • Holiday Inn Eindhoven
+          - article [ref=e143]:
+            - generic [ref=e144]: Gorinchem • Evenementenhal Gorinchem • 4 Apr 2026, 10:00
+            - generic [ref=e145]:
+              - link "Collectable World" [ref=e146] [cursor=pointer]:
+                - /url: /en/events/LvZ18QKl5TI05XZZlSoUg
+              - generic [ref=e147]:
+                - button "Add to favorites" [ref=e148]: ☆
+                - link "Add to calendar" [ref=e149] [cursor=pointer]:
+                  - /url: /api/calendar?id=LvZ18QKl5TI05XZZlSoUg
+                  - text: 📅
+            - paragraph [ref=e150]: Hobby/Special Interest Expos • Evenementenhal Gorinchem
+          - article [ref=e151]:
+            - generic [ref=e152]: Breda • Van der Valk Hotel Breda • 12 Apr 2026, 13:30
+            - generic [ref=e153]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e154] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1koIkdA-
+              - generic [ref=e155]:
+                - button "Add to favorites" [ref=e156]: ☆
+                - link "Add to calendar" [ref=e157] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1koIkdA-
+                  - text: 📅
+            - paragraph [ref=e158]: Family • Van der Valk Hotel Breda
+          - article [ref=e159]:
+            - generic [ref=e160]: Breda • Van der Valk Hotel Breda • 12 Apr 2026, 19:30
+            - generic [ref=e161]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e162] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kbZZoaY
+              - generic [ref=e163]:
+                - button "Add to favorites" [ref=e164]: ☆
+                - link "Add to calendar" [ref=e165] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kbZZoaY
+                  - text: 📅
+            - paragraph [ref=e166]: Family • Van der Valk Hotel Breda
+          - article [ref=e167]:
+            - generic [ref=e168]: Papendrecht • Leonardo Hotel Papendrecht • 13 Apr 2026, 19:30
+            - generic [ref=e169]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e170] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ16vj0qobM
+              - generic [ref=e171]:
+                - button "Add to favorites" [ref=e172]: ☆
+                - link "Add to calendar" [ref=e173] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ16vj0qobM
+                  - text: 📅
+            - paragraph [ref=e174]: Family • Leonardo Hotel Papendrecht
+          - article [ref=e175]:
+            - generic [ref=e176]: Deurne • Fletcher Kloosterhotel Willibror • 15 Apr 2026, 13:30
+            - generic [ref=e177]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e178] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1kFvuUo8
+              - generic [ref=e179]:
+                - button "Add to favorites" [ref=e180]: ☆
+                - link "Add to calendar" [ref=e181] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1kFvuUo8
+                  - text: 📅
+            - paragraph [ref=e182]: Family • Fletcher Kloosterhotel Willibror
+          - article [ref=e183]:
+            - generic [ref=e184]: Deurne • Fletcher Kloosterhotel Willibror • 15 Apr 2026, 19:30
+            - generic [ref=e185]:
+              - link "Derek Ogilvie - Up Close and Personal" [ref=e186] [cursor=pointer]:
+                - /url: /en/events/Z698xZbpZ1k7F7VfO
+              - generic [ref=e187]:
+                - button "Add to favorites" [ref=e188]: ☆
+                - link "Add to calendar" [ref=e189] [cursor=pointer]:
+                  - /url: /api/calendar?id=Z698xZbpZ1k7F7VfO
+                  - text: 📅
+            - paragraph [ref=e190]: Family • Fletcher Kloosterhotel Willibror
+          - article [ref=e191]:
+            - generic [ref=e192]: Helmond • Muziekcafé Helmond • 18 Apr 2026, 21:00
+            - generic [ref=e193]:
+              - 'link "LIVE: Junior Dell & The D-Lites" [ref=e194] [cursor=pointer]':
+                - /url: /en/events/LvZ18QpIVRPBfO8ZwgfiV
+              - generic [ref=e195]:
+                - button "Add to favorites" [ref=e196]: ☆
+                - link "Add to calendar" [ref=e197] [cursor=pointer]:
+                  - /url: /api/calendar?id=LvZ18QpIVRPBfO8ZwgfiV
+                  - text: 📅
+            - paragraph [ref=e198]: Reggae • Muziekcafé Helmond
+      - navigation "Pagination" [ref=e199]:
+        - link "Prev" [disabled]:
+          - /url: /en/events
+        - link "1" [ref=e200] [cursor=pointer]:
+          - /url: /en/events
+        - link "2" [ref=e201] [cursor=pointer]:
+          - /url: /en/events?p=2
+        - link "3" [ref=e202] [cursor=pointer]:
+          - /url: /en/events?p=3
+        - link "4" [ref=e203] [cursor=pointer]:
+          - /url: /en/events?p=4
+        - link "Next" [ref=e204] [cursor=pointer]:
+          - /url: /en/events?p=2
+```

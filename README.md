@@ -23,8 +23,20 @@ It shows:
 - Locale-based routing (EN / NL)
 - Basic SEO setup with structured data
 - Production-ready deployment on Vercel
+- Custom Open Graph preview image for social sharing
+- Clean production build (TypeScript + ESLint)
 
 The scope is intentionally limited to keep the architecture clean and maintainable.
+
+---
+
+## Accessibility & Responsiveness
+
+The application is fully responsive and optimized for mobile devices, tablets, and desktop screens.  
+The layout adjusts naturally across screen sizes, with consistent spacing and predictable interaction behavior.
+
+Accessibility was implemented following WCAG 2.1 AA best practices, including full keyboard navigation, visible focus
+states, semantic structure, and screen reader testing (VoiceOver).
 
 ---
 
@@ -152,6 +164,22 @@ After adding environment variables, I redeployed the last commit and.
 
 ---
 
+## Testing
+
+Basic automated smoke tests are implemented using Playwright to verify:
+
+- Homepage rendering
+- Events list rendering
+- Navigation to event detail page
+
+Run tests locally:
+
+```bash
+pnpm test
+```
+
+---
+
 ## Scripts
 
 ```bash
@@ -159,6 +187,7 @@ pnpm dev      # run locally
 pnpm build    # production build
 pnpm start    # run production build
 pnpm lint     # lint project
+pnpm test     # run Playwright smoke tests
 ```
 
 ---
