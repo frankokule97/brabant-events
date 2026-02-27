@@ -215,7 +215,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </a>
 
           <a
-            href="https://www.linkedin.com/"
+            href="https://www.linkedin.com/in/franko-kulesevic-6b200224b/"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white hover:underline"
