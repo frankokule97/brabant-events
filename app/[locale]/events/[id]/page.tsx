@@ -220,6 +220,7 @@ export default async function EventDetailsPage({
             className="h-72 w-full"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
+            tabIndex={-1}
           />
         </div>
       </section>

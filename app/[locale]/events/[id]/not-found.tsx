@@ -11,14 +11,14 @@ export default function NotFound() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <header className="rounded-xl border p-6">
+      <header className="rounded-xl border border-white/10 bg-white/5 p-6">
         <h1 className="text-2xl font-semibold">{t.event.notFoundTitle}</h1>
-        <p className="mt-2 text-sm text-gray-600">{t.event.notFoundBody}</p>
+        <p className="mt-2 text-sm text-white/70">{t.event.notFoundBody}</p>
 
         <div className="mt-4">
           <Link
             href={`/${locale}/events`}
-            className="inline-flex rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+            className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
             ← {t.event.backToEvents}
           </Link>
